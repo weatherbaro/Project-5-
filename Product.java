@@ -32,7 +32,14 @@ public class Product {
     public void setDescription(String description) { this.description = description; }
     public void setQuantity(int quantity) { this.quantity = quantity; }
     public void setPrice(double price) { this.price = price; }
-    public void setSalePrice(double salePrice) { this.salePrice = salePrice; }
+    
+    public void holdSale(double salePrice, int unitsToSell) { 
+        if (unitsToSell < quantitySold) {
+            this.salePrice = salePrice;
+        } else {
+            this.salePrice = -1;
+        }
+    }
 
     public void purchased(int quantity) {
         this.quantity--;
