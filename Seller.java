@@ -1,19 +1,18 @@
-package Week12.Project4;
-
-//Sellers can create, edit, or delete products associated with their stores.
-//Sellers can view a list of their sales by store, including customer information and revenues from the sale.
 
 import java.util.ArrayList;
 
-public class Seller {
+public class Seller extends UserBase {
+
     private String productName;
     private String storeName;
     private String description;
     private int quantityAvail;
     private int price;
     private ArrayList<String> productList;
-    public Seller (String productName, String storeName, String description, int quantityAvail,
-                        int price){
+
+    public Seller (String email, String password, String nickname, String productName, String storeName, String description, int quantityAvail,
+                   int price){
+        super(email, nickname, password);
         this.productName = productName;
         productList = new ArrayList<>();
         this.productList.add(productName);
@@ -22,6 +21,7 @@ public class Seller {
         this.quantityAvail = quantityAvail;
         this.price = price;
     }
+
     public String getProductName(){
         return productName;
     }
@@ -63,4 +63,8 @@ public class Seller {
         this.price = 0;
     }
 
+    @Override
+    public String getRole() {
+        return "seller";
+    }
 }
