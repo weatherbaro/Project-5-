@@ -1,0 +1,30 @@
+Report Part 1:
+The option selected by our group is option 3, which is an official marketplace of the application that enables mutual selection between merchants and customers. 
+Customers can have a more intuitive view of the merchant's sales information and sort their own selection lists,
+while merchants can view their customer's messages and adjust their product ranking. 
+In option 3's selection, we have chosen to implement the two major functions of File and Statistics. 
+To ensure a good user experience when using our program, 
+we make it easier for customers and sellers to understand each other and allow both parties to personalize their selection of trading partners.
+Therefore, when using our program, users can view detailed information about the products sold by the merchants, as well as the purchase history of these products. 
+Sellers can also view the number of products purchased by each customer and sort the sales volume in the product list.
+Conversely, customers can also sort the merchants based on their total sales volume.
+Later, look at our code closely. Main.java is the most important program that users can run to open and use our program,and then start registering an account. 
+Seller.java ensures that sellers can enter their product information to attract buyers and sort their products through data sorting.
+Store.java is responsible for providing an environment that implements the entire operating system's functionality, such as adding or removing products for merchants.
+Finally, Customers.java also plays an important role. 
+Many branches are created here to assist in implementing the code's operation, such as UserBase.java and User.java, which provide user information to Customers.java.
+With the interface of Persistent.java, any type of object can be persisted and loaded,
+enabling the entire program to run successfully and providing convenient services to users. 
+After that, we also added the first and third optional features. 
+Sellers can choose to keep sales and reduce the price of their products until a certain number of units are sold. 
+Customers browsing the market will be informed of the original price and the sale price, 
+and sellers can set a limit on the number of units per product, prohibiting customers from ordering more than the limit. Once the limit is reached, 
+customers will not be able to place any additional orders for the product unless the seller increases or removes the limit. 
+This ensures that our official marketplace of the application's market becomes more just and fair. 
+This not only allows customers to have more transparent information from merchants but also prevents customers from breaking the rules.
+It fundamentally promotes equality between merchants and customers, making it a fair transaction for both parties. 
+This is the reason and intention behind our choice of this option. 
+Finally, after testing our code, although the content could run successfully, 
+we still found some areas that could be improved. 
+We hope to make the entire market transaction process more detailed and implement more features in Project 5. 
+Our goal is to obtain good reviews from users and make more efforts to improve the code.
