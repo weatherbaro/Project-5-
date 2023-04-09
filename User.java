@@ -1,3 +1,4 @@
+
 public interface User {
 
     String getEmail();
