@@ -56,7 +56,7 @@ public class Main {
                             check = password;
                             checking = 1;
                         }
-                        if (editAccount(check, edit, checking)) {
+                        if (editAccount(email, check, edit, checking)) {
                             System.out.println("Your account has been updated!");
                         } else {
                             System.out.println("There was a problem with updating your account.");
@@ -151,27 +151,35 @@ public class Main {
             return false;
         }
     }
-
-    public static boolean editAccount(String check, String edit, int checking) {
+    
+    // account editing
+    // check is the data to be edited 
+    // checking is the index of that data
+    // always checks matching email first
+    public static boolean editAccount(String email, String check, String edit, int checking) {
         try {
-            BufferedReader bfr = new BufferedReader(new FileReader("Accounts.txt"));
-            String line = "";
+            File original = new File("Accounts.txt"); // original account file
+            File neww = new File("new.txt"); // new account file without the current account information
+
+            BufferedReader r = new BufferedReader(new FileReader(original));
+            BufferedWriter w = new BufferedWriter(new FileWriter(neww));
+
+            String line;
             String[] accountData;
-            while ((line = bfr.readLine()) != null) {
+            while ((line = r.readLine()) != null) {
                 accountData = line.split(", ", 3);
-                if (accountData[checking].equals(check)) {
+                if (accountData[0].equals(email) && accountData[checking].equals(check)) {
                     accountData[checking] = edit;
                     String newline = String.join(", ", accountData);
-                    System.out.println(newline);
-                    String filecontents = bfr.toString();
-                    filecontents = filecontents.replaceAll(line, newline);
-                    System.out.println(filecontents);
-                    bfr.close();
-                    return true;
+                    w.write(newline + "\n");
+                } else {
+                    w.write(line + "\n");
                 }
             }
-            bfr.close();
-            return false;
+            w.close();
+            r.close();
+            original.delete();
+            return (neww.renameTo(original));
         } catch (Exception e) {
             e.printStackTrace();
             return false;
