@@ -1,0 +1,17 @@
+In the option 3 chosen by our group, I am responsible for creating the Customer-related code. In the program I wrote,
+users can play the role of customers in the official marketplace of the application to browse, learn about, and purchase products. 
+After purchasing products, there will be a record of the purchase history, 
+and customers can view the detailed information of the purchase records, products, and sellers.
+Customers can also sort sellers by their total sales to facilitate personalized selection of merchants they are interested in.
+To complete this program, I divided it into many classes to write. The most important one is Customers.java, 
+which is used to implement customer viewing of purchase records and quantities, as well as their own balance.
+In addition, customers can browse products directly and support keyword search and sorting according to specified characters.
+Use.java and UserBase.java are used to provide data for customers to use. FileModule.java is a file module that implements loading and saving data from files.
+With the Persistent interface, it can achieve persistence and loading of objects of any type. The remaining files are used to save purchase history and sorting，
+just like Message.java，StatisticsModule.java and PurchaseHistory.java. 
+The experience of writing this program is unforgettable for me. 
+It was my first time writing such a long program, and I was a bit at a loss at the beginning. However,
+after discussing with my teammates, I gradually found a direction and got into the zone. 
+Although my part was mostly completed successfully, I didn't implement the optional features in my code, which is a bit regretful. 
+I hope to add more interesting functions in Project 5 to make this program that I designed for the first time more dynamic. 
+I will work harder to do better in Project 5. 
