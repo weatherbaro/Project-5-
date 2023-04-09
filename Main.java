@@ -26,10 +26,20 @@ public class Main {
                 String email = scan.nextLine();
                 System.out.println("Enter your password:");
                 String password = scan.nextLine();
-                logged = trylogging(email, password);
+                // TODO: account initialization
+                if (trylogging(email, password)) {
+                    logged = true;
+                    ArrayList<String> accountData = getAccountInfo(email);
+                    if (accountData.get(3).equals("customer")) {
+                        Customer customer = new Customer();
+                    } else {
+                        Seller seller = new Seller();
+                    }
+                }
+                /////////////////////////////////////////
                 while (logged) {
                     // Primary Interface based on user class
-                    System.out.println("1. Delete Account\n2. Edit Account\n3. Logout");
+                    // display menu from seller or user method
                     choice = scan.nextLine();
                     if (choice.equals("1")) {
                         if (deleteAccount(email)) {
@@ -43,18 +53,21 @@ public class Main {
                         String check = "";
                         int checking = -1;
                         System.out.println("What would you like to change?");
-                        System.out.println("1. Email\n2. Password");
+                        System.out.println("1. Email\n2. Password\n3. Nickname");
                         choice = scan.nextLine();
+                        checking = Integer.parseInt(choice) - 1;
                         if (choice.equals("1")) {
-                            System.out.println("Enter the updated email:");
+                            System.out.println("Enter the updated information:");
                             edit = scan.nextLine();
                             check = email;
-                            checking = 0;
+                        } else if (choice.equals("2")) {
+                            System.out.println("Enter the updated password:");
+                            edit = scan.nextLine();
+                            check = getAccountInfo(email).get(3);
                         } else if (choice.equals("2")) {
                             System.out.println("Enter the updated password:");
                             edit = scan.nextLine();
                             check = password;
-                            checking = 1;
                         }
                         if (editAccount(email, check, edit, checking)) {
                             System.out.println("Your account has been updated!");
@@ -70,6 +83,8 @@ public class Main {
                 String email = scan.nextLine();
                 System.out.println("Enter your password:");
                 String password = scan.nextLine();
+                System.out.println("Enter a nickname for yourself:");
+                String nickname = scan.nextLine();
                 System.out.println("1. Seller\n2. Customer");
                 String type = scan.nextLine();
                 if (type.equals("1")) {
@@ -77,7 +92,7 @@ public class Main {
                 } else {
                     type = "customer";
                 }
-                created = createAccount(email, password, type);
+                created = createAccount(email, password, nickname, type);
                 if (created) {
                     System.out.println("Your new account has been successfully created!");
                 } else {
@@ -97,19 +112,19 @@ public class Main {
             String line = "";
             String[] accountData;
             while ((line = bfr.readLine()) != null) {
-                accountData = line.split(", ", 3);
+                accountData = line.split(", ", 4);
                 if (accountData[0].equals(email) && accountData[1].equals(password)) {
                     System.out.println("Login Successful!");
-                    System.out.printf("Welcome back, %s\n", email);
+                    System.out.printf("Welcome back, %s\n", accountData[2]);
                     bfr.close();
                     return true;
                 }
             }
-            System.out.println("Login Failed! User does not exist.");
             bfr.close();
+            System.out.println("There was an error logging in!");
             return false;
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("There was an error logging in!");
             return false;
         }
     }
@@ -125,7 +140,7 @@ public class Main {
 
             String line;
             while((line = r.readLine()) != null) {
-                if(!(line.split(", ", 3)[0].equals(email))) {
+                if(!(line.split(", ", 4)[0].equals(email))) {
                     w.write(line + "\n");
                 }
             }
@@ -140,10 +155,10 @@ public class Main {
     }
 
     // method for account creation
-    public static boolean createAccount(String email, String password, String type) {
+    public static boolean createAccount(String email, String password, String nickname, String type) {
         try {
             BufferedWriter bfw = new BufferedWriter(new FileWriter("Accounts.txt", true));
-            bfw.write(String.format("%s, %s, %s\n", email, password, type));
+            bfw.write(String.format("%s, %s, %s, %s\n", email, password, nickname, type));
             bfw.close();
             return true;
         } catch (Exception e) {
@@ -151,9 +166,9 @@ public class Main {
             return false;
         }
     }
-    
+
     // account editing
-    // check is the data to be edited 
+    // check is the data to be edited
     // checking is the index of that data
     // always checks matching email first
     public static boolean editAccount(String email, String check, String edit, int checking) {
@@ -167,7 +182,7 @@ public class Main {
             String line;
             String[] accountData;
             while ((line = r.readLine()) != null) {
-                accountData = line.split(", ", 3);
+                accountData = line.split(", ", 4);
                 if (accountData[0].equals(email) && accountData[checking].equals(check)) {
                     accountData[checking] = edit;
                     String newline = String.join(", ", accountData);
@@ -183,6 +198,30 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    // separates and stores all data on account line into an arraylist
+    public static ArrayList<String> getAccountInfo(String email) {
+        ArrayList<String> accountInfo = new ArrayList<>();
+        boolean acquired = false;
+        try {
+            BufferedReader bfr = new BufferedReader(new FileReader("Accounts.txt"));
+            String line = "";
+            String[] accountData;
+            while ((line = bfr.readLine()) != null) {
+                accountData = line.split(", ", 4);
+                if (accountData[0].equals(email)) {
+                    for (String data: accountData) {
+                        accountInfo.add(data);
+                    }
+                    acquired = true;
+                }
+            }
+            bfr.close();
+            return accountInfo;
+        } catch (Exception e) {
+            return null;
         }
     }
 }
