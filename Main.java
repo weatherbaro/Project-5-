@@ -344,6 +344,7 @@ public class Main {
                                 while (dash) {
                                     seller.displayDashboard(ownedStores, sortBy);
                                     System.out.println("1. Sort by Ascending Sales\n2. Sort by Descending Sales\n3. Return to Seller Menu");
+                                    choice = scan.nextLine();
                                     if (choice.equals("1")) {
                                         sortBy = "ascending";
                                     } else if (choice.equals("2")) {
@@ -442,7 +443,7 @@ public class Main {
     public static boolean trylogging(String email, String password) {
         try {
             BufferedReader bfr = new BufferedReader(new FileReader("Accounts.txt"));
-            String line = "";
+            String line;
             String[] accountData;
             while ((line = bfr.readLine()) != null) {
                 accountData = line.split("; ");
@@ -548,7 +549,7 @@ public class Main {
         boolean acquired = false;
         try {
             BufferedReader bfr = new BufferedReader(new FileReader("Accounts.txt"));
-            String line = "";
+            String line;
             String[] accountData;
             while ((line = bfr.readLine()) != null) {
                 accountData = line.split("; ");
@@ -579,7 +580,7 @@ public class Main {
             try {
                 File productfile = new File("Products.txt"); // product data file
                 BufferedReader productreader = new BufferedReader(new FileReader(productfile));
-                String productline = "";
+                String productline;
                 String[] productData;
                 while ((productline = productreader.readLine()) != null) {
                     productData = productline.split("; ");
@@ -625,7 +626,7 @@ public class Main {
         try {
             File storefile = new File("Stores.txt"); // store data file
             BufferedReader storereader = new BufferedReader(new FileReader(storefile));
-            String storeline = "";
+            String storeline;
             String[] storeData;
 
             String storeName;
@@ -643,7 +644,7 @@ public class Main {
                 for (String product : productarr) {
                     File productfile = new File("Products.txt"); // product data file
                     BufferedReader productreader = new BufferedReader(new FileReader(productfile));
-                    String productline = "";
+                    String productline;
                     String[] productData;
                     while ((productline = productreader.readLine()) != null) {
                         productData = productline.split("; ");
@@ -697,7 +698,7 @@ public class Main {
         try {
             File productfile = new File("Products.txt"); // product data file
             BufferedReader r = new BufferedReader(new FileReader(productfile));
-            String line = "";
+            String line;
             String[] productData;
 
             String name;
@@ -760,7 +761,7 @@ public class Main {
             File newAccount = new File("newAccounts.txt"); // new account file without the current account information
             BufferedReader r = new BufferedReader(new FileReader(originalAccount));
             BufferedWriter w = new BufferedWriter(new FileWriter(newAccount));
-            String line = "";
+            String line;
             String[] data;
             while ((line = r.readLine()) != null) {
                 data = line.split("; ");
@@ -891,7 +892,7 @@ public class Main {
             File newAccount = new File("newAccounts.txt"); // new account file without the current account information
             BufferedReader r = new BufferedReader(new FileReader(originalAccount));
             BufferedWriter w = new BufferedWriter(new FileWriter(newAccount));
-            String line = "";
+            String line;
             String[] data;
             while ((line = r.readLine()) != null) {
                 data = line.split("; ");
@@ -990,8 +991,8 @@ public class Main {
                 f = new File("Products.txt");
             }
             BufferedReader r = new BufferedReader(new FileReader(f));
-            String line = "";
-            String data[];
+            String line;
+            String[] data;
             while ((line = r.readLine()) != null) {
                 data = line.split("; ");
                 if (name.equalsIgnoreCase(data[0])) {
