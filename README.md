@@ -30,13 +30,16 @@ Data for the economy is split into three files whose values are separated by sem
   # Main.java
     -
   # User.java
-    -
+    - Interface for returning the email, nickname, password and role of a user.
   # UserBase.java
-    -
+    - Abstract class that implements user.
+    - Contains methods for setting and returning parameters of a user.
   # Customer.java
-    -
+    - Class that extends UserBase, contains functionality associated with a customer user.
+    - This includes methods for viewing the marketplace, the dashboard and making a purchase.
   # Seller.java
-    -
+    - Class that extends UserBase, has functionality for sellers.
+    - This includes methods for the creation of stores, viewing the dashboard of stores that a seller has.
   # Store.java
     - A class for storing a list of products from the store
     - Has methods for creating/adding a product, editing or removing products from the store.
