@@ -9,4 +9,20 @@ Run with the following files:
   - Product.java
   - NotAProductException.java
   
-  good luck
+Data for the economy is split into three files whose values are separated by semicolons then commas:
+  - Accounts.txt
+    - [Email]; [Password]; [Nickname]; [Account Type]; +
+    - If the account is a Customer:
+      - [Balance]; [Purchase History]
+      - Example: chen3927@purdue.edu; 12345; Willie; customer; 132.43; Rope, Stapler, Chair, Shovel
+    - If the account is a Seller:
+      - [Stores owned by the seller];
+      - Example: chen3927@purdue.edu; 12345; Willie; seller; Follett's, Macy's, Target
+      
+  - Stores.txt
+    - [Name of the Store]; [Products of the Store]; [Total items sold by the store]; [Customers that purchased a product from the store]
+    - Example: Follett's; Stapler, Chair, Rope; 345; Willie
+    
+  - Products.txt
+    - [Name of the Product]; [Name of the product's store]; [Boolean for if product is on sale]; [Description of Product]; [Quantity of product in stock]; [Price of product]; [Number of Products sold thus far]
+     - Example: Stapler; Follett's; true; Staples paper; 80; 8.99; 5
