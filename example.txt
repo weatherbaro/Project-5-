@@ -18,6 +18,10 @@ Customers can choose to sort the dashboard.
 Customers can export a file with their purchase history.  
 
 ________________
+
+Sellers can elect to hold sales that reduce the price of a product until a specified number of units are sold. Customers will be informed of the original and sale price when browsing the marketplace. 
+
+________________
 seller
 Sellers can view a dashboard that lists statistics for each of their stores.
 Data will include a list of customers with the number of items that they have purchased and a list of products with the number of sales. 
