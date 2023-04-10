@@ -1,5 +1,3 @@
-package com.company;
-
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -108,7 +106,7 @@ public class Customer extends UserBase {
                 int n = stores.size();
                 for (int i = 0; i < n-1; i++) {
                     int min_idx = i;
-                    for (int j = i+1; j < n; j++) {
+                    for (int j = i + 1; j < n; j++) {
                         if (stores.get(j).getsales() < stores.get(min_idx).getsales()) {
                                 min_idx = j;
                             }
@@ -148,7 +146,8 @@ public class Customer extends UserBase {
 
     // checks if purchase is successful and adds product to current customer's purchase history
 
-    public static boolean purchase(ArrayList<Product> products, ArrayList<Store> stores, String name, ArrayList<Product> purchaseHistory) {
+    public static boolean purchase(ArrayList<Product> products, ArrayList<Store> stores, String name,
+                                   ArrayList<Product> purchaseHistory, String nickname) {
         try {
             for (Product p: products) {
                 if (p.getName().equalsIgnoreCase(name)) {
@@ -158,6 +157,7 @@ public class Customer extends UserBase {
                     for (Store s: stores) {
                         if (s.getName().equals(storename)) {
                             s.setSales(s.getsales() + 1);
+                            s.addCustomer(nickname);
                             purchaseHistory.add(p);
                             return true;
                         }
