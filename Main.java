@@ -1,10 +1,12 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
-
-// the current method is to use a text file to store account information
-// another way would be a static global arraylist of accounts classes that
-// contains the specific seller or buyer and all of their info in one object
+/**
+ * Project 4 Marketplace
+ *
+ * @version 2023-04-07
+ * @author Willie Chen
+ */
 public class Main {
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
@@ -181,20 +183,24 @@ public class Main {
                                             System.out.println("1. Email\n2. Password\n3. Nickname");
                                             choice = scan.nextLine();
                                             checking = Integer.parseInt(choice) - 1;
-                                            if (choice.equals("1")) {
-                                                System.out.println("Enter the updated email:");
-                                                edit = scan.nextLine();
-                                                check = email;
-                                            } else if (choice.equals("2")) {
-                                                System.out.println("Enter the updated password:");
-                                                edit = scan.nextLine();
-                                                System.out.println(accountData.get(1));
-                                                check = accountData.get(1);
-                                            } else if (choice.equals("3")) {
-                                                System.out.println("Enter the new nickname:");
-                                                edit = scan.nextLine();
-                                                System.out.println(accountData.get(2));
-                                                check = accountData.get(2);
+                                            switch (choice) {
+                                                case "1" -> {
+                                                    System.out.println("Enter the updated email:");
+                                                    edit = scan.nextLine();
+                                                    check = email;
+                                                }
+                                                case "2" -> {
+                                                    System.out.println("Enter the updated password:");
+                                                    edit = scan.nextLine();
+                                                    System.out.println(accountData.get(1));
+                                                    check = accountData.get(1);
+                                                }
+                                                case "3" -> {
+                                                    System.out.println("Enter the new nickname:");
+                                                    edit = scan.nextLine();
+                                                    System.out.println(accountData.get(2));
+                                                    check = accountData.get(2);
+                                                }
                                             }
                                             if (editAccount(email, check, edit, checking)) {
                                                 System.out.println("Your account has been updated!");
@@ -254,7 +260,7 @@ public class Main {
                             case "1" -> {
                                 System.out.println("Enter the name for the store");
                                 String storeName = scan.nextLine();
-                                Store store = new Store(storeName, 0, new ArrayList<Product>(), new ArrayList<String>());
+                                Store store = new Store(storeName, 0, new ArrayList<>(), new ArrayList<>());
                                 seller.addStore(store);
                                 System.out.println("Your new store has been created!");
                             }
@@ -263,81 +269,94 @@ public class Main {
                                 String selectedStore = scan.nextLine();
                                 boolean productMenu = true;
                                 while (productMenu) {
-                                    System.out.println("1. Create a product\n2. Edit a product\n" +
-                                            "3. Delete a product\n4. Choose a different store\n5. Return to Seller Menu");
+                                    System.out.println("""
+                                            1. Create a product
+                                            2. Edit a product
+                                            3. Delete a product
+                                            4. Choose a different store
+                                            5. Return to Seller Menu""");
                                     choice = scan.nextLine();
-                                    if (choice.equals("1")) {
-                                        System.out.println("Enter the name of the product:");
-                                        String pName = scan.nextLine();
-                                        System.out.println("Enter the description of the product:");
-                                        String des = scan.nextLine();
-                                        System.out.println("Enter the quantity of the product:");
-                                        int quantity = scan.nextInt();
-                                        scan.nextLine();
-                                        System.out.println("Enter the price of the product:");
-                                        double price = scan.nextDouble();
-                                        scan.nextLine();
-                                        Product toBeAdded = new Product(pName, selectedStore, false, des, quantity, price, 0);
-                                        ownedStores = seller.getStores();
-                                        ownedProducts = getOwnedProducts(ownedStores);
-                                        for (Store s : seller.getStores()) {
-                                            if (selectedStore.equals(s.getName())) {
-                                                try {
-                                                    s.addProduct(toBeAdded);
-                                                    System.out.println("Product has been added.");
-                                                } catch (NotAProductException e) {
-                                                    System.out.println(e);
+                                    switch (choice) {
+                                        case "1" -> {
+                                            System.out.println("Enter the name of the product:");
+                                            String pName = scan.nextLine();
+                                            System.out.println("Enter the description of the product:");
+                                            String des = scan.nextLine();
+                                            System.out.println("Enter the quantity of the product:");
+                                            int quantity = scan.nextInt();
+                                            scan.nextLine();
+                                            System.out.println("Enter the price of the product:");
+                                            double price = scan.nextDouble();
+                                            scan.nextLine();
+                                            Product toBeAdded = new Product(pName, selectedStore, false, des, quantity, price, 0);
+                                            ownedStores = seller.getStores();
+                                            ownedProducts = getOwnedProducts(ownedStores);
+                                            for (Store s : seller.getStores()) {
+                                                if (selectedStore.equals(s.getName())) {
+                                                    try {
+                                                        s.addProduct(toBeAdded);
+                                                        System.out.println("Product has been added.");
+                                                    } catch (NotAProductException e) {
+                                                        System.out.println(e);
+                                                    }
                                                 }
                                             }
                                         }
-                                    } else if (choice.equals("2")) {
-                                        System.out.println("Enter the name of the product:");
-                                        String pName = scan.nextLine();
-                                        Product selectedProduct = null;
-                                        for (Product p : ownedProducts) {
-                                            if (pName.equalsIgnoreCase(p.getName())) {
-                                                selectedProduct = p;
-                                            }
-                                        }
-                                        System.out.println("What would you like to change about the product?");
-                                        System.out.println("1.Name\n2. Description\n3. Quantity\n4. Price");
-                                        choice = scan.nextLine();
-                                        if (choice.equals("1")) {
-                                            System.out.println("Enter the new name for the product:");
-                                            String newName = scan.nextLine();
-                                            selectedProduct.setName(newName);
-                                        } else if (choice.equals("2")) {
-                                            System.out.println("Enter the new description for the product:");
-                                            String newDes = scan.nextLine();
-                                            selectedProduct.setDescription(newDes);
-                                        } else if (choice.equals("3")) {
-                                            System.out.println("Enter the new quantity for the product:");
-                                            int newQuantity = scan.nextInt();
-                                            scan.nextLine();
-                                            selectedProduct.setQuantity(newQuantity);
-                                        } else if (choice.equals("4")) {
-                                            System.out.println("Enter the new price for the product:");
-                                            double newPrice = scan.nextDouble();
-                                            scan.nextLine();
-                                            selectedProduct.setPrice(newPrice);
-                                        }
-                                        System.out.println("The product has been edited.");
-                                    } else if (choice.equals("3")) {
-                                        System.out.println("Enter the name of the product to be deleted:");
-                                        String pName = scan.nextLine();
-                                        for (Store s : ownedStores) {
-                                            for (Product p : s.getProducts()) {
+                                        case "2" -> {
+                                            System.out.println("Enter the name of the product:");
+                                            String pName = scan.nextLine();
+                                            Product selectedProduct = null;
+                                            for (Product p : ownedProducts) {
                                                 if (pName.equalsIgnoreCase(p.getName())) {
-                                                    s.removeProduct(p);
+                                                    selectedProduct = p;
                                                 }
                                             }
+                                            System.out.println("What would you like to change about the product?");
+                                            System.out.println("1.Name\n2. Description\n3. Quantity\n4. Price");
+                                            choice = scan.nextLine();
+                                            switch (choice) {
+                                                case "1" -> {
+                                                    System.out.println("Enter the new name for the product:");
+                                                    String newName = scan.nextLine();
+                                                    selectedProduct.setName(newName);
+                                                }
+                                                case "2" -> {
+                                                    System.out.println("Enter the new description for the product:");
+                                                    String newDes = scan.nextLine();
+                                                    selectedProduct.setDescription(newDes);
+                                                }
+                                                case "3" -> {
+                                                    System.out.println("Enter the new quantity for the product:");
+                                                    int newQuantity = scan.nextInt();
+                                                    scan.nextLine();
+                                                    selectedProduct.setQuantity(newQuantity);
+                                                }
+                                                case "4" -> {
+                                                    System.out.println("Enter the new price for the product:");
+                                                    double newPrice = scan.nextDouble();
+                                                    scan.nextLine();
+                                                    selectedProduct.setPrice(newPrice);
+                                                }
+                                            }
+                                            System.out.println("The product has been edited.");
                                         }
-                                        System.out.println("The product has been deleted.");
-                                    } else if (choice.equals("4")) {
-                                        System.out.println("Enter the name of the store:");
-                                        selectedStore = scan.nextLine();
-                                    } else {
-                                        productMenu = false;
+                                        case "3" -> {
+                                            System.out.println("Enter the name of the product to be deleted:");
+                                            String pName = scan.nextLine();
+                                            for (Store s : ownedStores) {
+                                                for (Product p : s.getProducts()) {
+                                                    if (pName.equalsIgnoreCase(p.getName())) {
+                                                        s.removeProduct(p);
+                                                    }
+                                                }
+                                            }
+                                            System.out.println("The product has been deleted.");
+                                        }
+                                        case "4" -> {
+                                            System.out.println("Enter the name of the store:");
+                                            selectedStore = scan.nextLine();
+                                        }
+                                        default -> productMenu = false;
                                     }
                                 }
                             }
@@ -384,12 +403,10 @@ public class Main {
                                         } else if (choice.equals("2")) {
                                             System.out.println("Enter the updated password:");
                                             edit = scan.nextLine();
-                                            System.out.println(accountData.get(1));
                                             check = accountData.get(1);
                                         } else if (choice.equals("3")) {
                                             System.out.println("Enter the new nickname:");
                                             edit = scan.nextLine();
-                                            System.out.println(accountData.get(2));
                                             check = accountData.get(2);
                                         }
                                         if (editAccount(email, check, edit, checking)) {
@@ -452,8 +469,6 @@ public class Main {
             File newStores = new File("newStores.txt");
             BufferedReader r = new BufferedReader(new FileReader(originalStores));
             BufferedWriter w = new BufferedWriter(new FileWriter(newStores));
-            String line;
-            String[] data;
             for (Store s : stores) {
                 String storeName = s.getName();
                 String productNames = "";
@@ -644,15 +659,16 @@ public class Main {
                         }
                     }
                 }
-                if (isNew(storeName, "store")) ;
-                w.write(String.format("%s; %s; %d; %s\n", storeName, productNames, sales, customernames));
+                if (isNew(storeName, "store")) {
+                    w.write(String.format("%s; %s; %d; %s\n", storeName, productNames, sales, customernames));
+                }
             }
             r.close();
             w.close();
             originalStore.delete();
             newStore.renameTo(originalStore);
         } catch(Exception e) {
-            e.printStackTrace();;
+            e.printStackTrace();
             System.out.println("Error updating store data!");
         }
     }
@@ -799,7 +815,6 @@ public class Main {
     // separates and stores all data on account line into an arraylist
     public static ArrayList<String> getAccountInfo(String email) {
         ArrayList<String> accountInfo = new ArrayList<>();
-        boolean acquired = false;
         try {
             BufferedReader bfr = new BufferedReader(new FileReader("Accounts.txt"));
             String line;
@@ -810,7 +825,6 @@ public class Main {
                     for (String data: accountData) {
                         accountInfo.add(data);
                     }
-                    acquired = true;
                 }
             }
             bfr.close();
@@ -823,15 +837,15 @@ public class Main {
     // turns purchase history from account file into an arraylist to put into the customer class
     public static ArrayList<Product> importPurchaseHistory(String purchases) {
 
-        ArrayList<Product> productslist = new ArrayList<>();
+        ArrayList<Product> history = new ArrayList<>();
         if (purchases.equals("none")) {
-            return productslist;
+            return history;
         }
         String[] purchasearr = purchases.split(", ");
 
         for (String purchaseName : purchasearr) {
             try {
-                File productfile = new File(".idea/Products.txt"); // product data file
+                File productfile = new File("Products.txt"); // product data file
                 BufferedReader productreader = new BufferedReader(new FileReader(productfile));
                 String productline;
                 String[] productData;
@@ -845,7 +859,7 @@ public class Main {
                         int quantity = Integer.parseInt(productData[4]);
                         double price = Double.parseDouble(productData[5]);
                         int sold = Integer.parseInt(productData[6]);
-                        productslist.add(new Product(productname, store, onSale, description, quantity, price, sold));
+                        history.add(new Product(productname, store, onSale, description, quantity, price, sold));
                     }
                 }
                 productreader.close();
@@ -853,7 +867,7 @@ public class Main {
                 System.out.println("Error getting customer purchase history!");
             }
         }
-        return productslist;
+        return history;
     }
 
     public static boolean exportPurchaseHistory(ArrayList<Product> purchaseHistory, String nickname) {
@@ -887,7 +901,7 @@ public class Main {
 
             ArrayList<Store> stores = new ArrayList<>();
             String[] productarr;
-            ArrayList<Product> products = null;
+            ArrayList<Product> products;
             // initializing store arraylist
             while ((storeline = storereader.readLine()) != null) {
                 storeData = storeline.split("; ");
