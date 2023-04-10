@@ -147,7 +147,8 @@ public class Main {
                                     System.out.println("1. Purchase\n2. Return to market");
                                     choice = scan.nextLine();
                                     if (choice.equals("1")) {
-                                        boolean purchased = customer.purchase(productDirectory, storeDirectory, productname, purchaseHistory);
+                                        boolean purchased = Customer.purchase(productDirectory, storeDirectory,
+                                                productname, purchaseHistory, customer.getNickname());
                                         if (purchased) {
                                             System.out.println("The product has been successfully purchased!\nReturning to the marketplace...");
                                         } else {
@@ -453,33 +454,30 @@ public class Main {
             BufferedWriter w = new BufferedWriter(new FileWriter(newStores));
             String line;
             String[] data;
-            while ((line = r.readLine()) != null) {
-                data = line.split("; ");
-                for (Store s : stores) {
-                    if (data[0].equalsIgnoreCase(s.getName())) {
-                        String storeName = s.getName();
-                        String productNames = "";
-                        ArrayList<Product> storeProducts = s.getProducts();
-                        for (int i = 0; i < storeProducts.size() - 1; i++) {
-                            productNames += storeProducts.get(i).getName();
-                            if (i < storeProducts.size() - 1) {
-                                productNames += ", ";
-                            }
-                        }
-                        int sales = s.getsales();
-                        String customernames = "";
-                        ArrayList<String> c = s.getCustomers();
-                        for (int i = 0; i < c.size() - 1; i++) {
-                            customernames += c.get(i);
-                            if (i < c.size() - 1) {
-                                customernames += ", ";
-                            }
-                        }
-                        w.write(String.format("%s; %s; %d; %s\n", storeName, productNames, sales, customernames));
-                    } else {
-                        w.write(line + "\n");
+            for (Store s : stores) {
+                String storeName = s.getName();
+                String productNames = "";
+                ArrayList<Product> storeProducts = s.getProducts();
+                for (int i = 0; i < storeProducts.size(); i++) {
+                    productNames += storeProducts.get(i).getName();
+                    if (i < storeProducts.size() - 1) {
+                        productNames += ", ";
                     }
                 }
+                int sales = s.getsales();
+                String customernames = "";
+                ArrayList<String> c = s.getCustomers();
+                if (c.isEmpty()) {
+                    customernames = "none";
+                } else {
+                    for (int i = 0; i < c.size(); i++) {
+                        customernames += c.get(i);
+                        if (i < c.size() - 1) {
+                            customernames += ", ";
+                        }
+                    }
+                }
+                w.write(String.format("%s; %s; %d; %s\n", storeName, productNames, sales, customernames));
             }
             w.close();
             r.close();
@@ -493,35 +491,23 @@ public class Main {
 
     private static void updateCustomerProducts(ArrayList<Product> products) {
         try {
-            File originalProducts = new File("Products.txt"); // original account file
-            File newProducts = new File("newProducts.txt"); // new account file without the current account information
-            BufferedReader r = new BufferedReader(new FileReader(originalProducts));
-            BufferedWriter w = new BufferedWriter(new FileWriter(newProducts));
-            String line;
-            String[] data;
+            FileWriter fw = new FileWriter("Products.txt", false);
+            PrintWriter pw = new PrintWriter(fw, false);
+            pw.flush();
 
-            while ((line = r.readLine()) != null) {
-                data = line.split("; ");
-                for (Product p : products) {
-                    if (data[0].equalsIgnoreCase(p.getName())) {
-                        String productName = p.getName();
-                        String StoreName = p.getStoreName();
-                        boolean onSale = p.isOnSale();
-                        String description = p.getDescription();
-                        int quantity = p.getQuantity();
-                        double price = p.getPrice();
-                        int sold = p.getQuantitySold();
-                        w.write(String.format("%s; %s; %s; %s; %d; %.2f, %d\n",
-                                productName, StoreName, onSale, description, quantity, price, sold));
-                    } else {
-                        w.write(line + "\n");
-                    }
-                }
+            for (Product p : products) {
+                String productName = p.getName();
+                String StoreName = p.getStoreName();
+                boolean onSale = p.isOnSale();
+                String description = p.getDescription();
+                int quantity = p.getQuantity();
+                double price = p.getPrice();
+                int sold = p.getQuantitySold();
+                pw.write(String.format("%s; %s; %s; %s; %d; %.2f; %d\n",
+                        productName, StoreName, onSale, description, quantity, price, sold));
             }
-            w.close();
-            r.close();
-            originalProducts.delete();
-            newProducts.renameTo(originalProducts);
+            pw.close();
+            fw .close();
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error updating product data.");
@@ -565,7 +551,7 @@ public class Main {
 
     private static void updateSellerProducts(ArrayList<Product> products) {
         try {
-            File originalProducts = new File("Products.txt");
+            File originalProducts = new File(".idea/Products.txt");
             File newProducts = new File("newProducts.txt");
             BufferedReader r = new BufferedReader(new FileReader(originalProducts));
             BufferedWriter w = new BufferedWriter(new FileWriter(newProducts));
@@ -845,7 +831,7 @@ public class Main {
 
         for (String purchaseName : purchasearr) {
             try {
-                File productfile = new File("Products.txt"); // product data file
+                File productfile = new File(".idea/Products.txt"); // product data file
                 BufferedReader productreader = new BufferedReader(new FileReader(productfile));
                 String productline;
                 String[] productData;
@@ -931,8 +917,10 @@ public class Main {
                 sales = Integer.parseInt(storeData[2]);
                 ArrayList<String> customers = new ArrayList<>();
                 String[] c = storeData[3].split(", ");
-                for (String s: c) {
-                    customers.add(s);
+                if (!c[0].equals("none")) {
+                    for (String s : c) {
+                        customers.add(s);
+                    }
                 }
                 stores.add(new Store(storeName, sales, products, customers));
             }
@@ -1029,7 +1017,7 @@ public class Main {
             if (type.equals("store")) {
                 f = new File("Stores.txt");
             } else {
-                f = new File("Products.txt");
+                f = new File(".idea/Products.txt");
             }
             BufferedReader r = new BufferedReader(new FileReader(f));
             String line;
