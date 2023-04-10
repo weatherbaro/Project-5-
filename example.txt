@@ -1,0 +1,26 @@
+//customer logs in
+//marketplace opens
+product name - store name - price
+product name - store name - price
+etc
+//customer selects product
+//he is taken to the product page which shows
+description - quantity available
+//customer selects to buy, quantity decreases
+
+- Customers can view the overall marketplace listing products for sale, search for specific products using terms that match the name, store, or description,
+and sort the marketplace on price or quantity available. 
+- Customers can purchase items from the product page and review a history of their previously purchased items. 
+
+Customers can view a dashboard with store and seller information.
+Data will include a list of stores by number of products sold and a list of stores by the products purchased by that particular customer. 
+Customers can choose to sort the dashboard.
+Customers can export a file with their purchase history.  
+
+________________
+seller
+Sellers can view a dashboard that lists statistics for each of their stores.
+Data will include a list of customers with the number of items that they have purchased and a list of products with the number of sales. 
+Sellers can choose to sort the dashboard.
+Sellers can import or export products for their stores using a csv file. 
+All product details should be included, with one row per product. 
