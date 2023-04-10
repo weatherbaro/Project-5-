@@ -9,13 +9,13 @@ public class Product {
     private boolean onSale;
 
 
-    public Product(String name, String storeName, boolean onSale, String description, int quantity, double price) {
+    public Product(String name, String storeName, boolean onSale, String description, int quantity, double price, int quantitySold) {
         this.name = name;
         this.storeName = storeName;
         this.description = description;
         this.quantity = quantity;
         this.price = price;
-        this.quantitySold = 0;
+        this.quantitySold = quantitySold;
         this.onSale = onSale;
     }
 
@@ -27,13 +27,14 @@ public class Product {
     public int getQuantitySold() { return quantitySold; }
     public double getPrice() { return price; }
     public double getSalePrice() { return salePrice; }
-    
+
 
     public void setName(String name) { this.name = name; }
     public void setStoreName(String storeName) { this.storeName = storeName; }
     public void setSale(boolean onSale) { this.onSale = onSale; }
     public void setDescription(String description) { this.description = description; }
     public void setQuantity(int quantity) { this.quantity = quantity; }
+    public void setQuantitySold(int quantitySold) { this.quantitySold = quantitySold; }
     public void setPrice(double price) { this.price = price; }
 
     public void holdSale(int quantityToSell, double salePrice) {
@@ -43,13 +44,7 @@ public class Product {
         }
     }
 
-    public void purchased(int quantity) {
-        this.quantity--;
-        this.quantitySold++;
-    }
-
-
-    public String toString() {
+    public String saleString() {
         if (onSale) {
             String format = "Product name: %s\nStore Name: %s\nNew price: %d\nOriginal price: %d";
             return String.format(format, this.name, this.storeName, this.salePrice, this.price);
@@ -60,8 +55,9 @@ public class Product {
     }
 
     public String productPage() {
-        String format = "Product description: %s\nQuantity available: %d";
-        return String.format(format, this.description, this.quantity);
+        String format = "====================\nName: %s\nProduct description: %s\nQuantity available: %d";
+        return String.format(format, this.name, this.description, this.quantity);
     }
 
 }
+
