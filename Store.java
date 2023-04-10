@@ -49,8 +49,9 @@ public class Store {
     }
 
     public void addCustomer(String customerName) {
-        this.customers.add(customerName);
+        if (!this.customers.contains(customerName)) {
+            this.customers.add(customerName);
+        }
     }
-
 
 }
