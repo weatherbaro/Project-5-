@@ -11,11 +11,11 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Scanner scan = new Scanner(System.in);
 
-        String choice = ""; // stores user navigation inputs
+        String choice; // stores user navigation inputs
         System.out.println("Welcome!");
 
         boolean logged = false; // status on whether user has logged in successfully
-        boolean created = false; // checks if account creation was successful
+        boolean created; // checks if account creation was successful
         boolean on = true; // controls if program is running or not
 
         String email = "";
@@ -56,161 +56,181 @@ public class Main {
                         Customer customer = new Customer(email, password, accountData.get(2),
                                 Double.parseDouble(accountData.get(4)), purchaseHistory);
                         customer.displayMarket(productDirectory, scenario, sortBy, sale, searching, search);
-                        System.out.println("1. Sort products\n2. Search for a product\n" +
-                                    "3. Display Dashboard\n4. Select a product\n" +
-                                "5. Account Settings\n6. View purchase history\n7. Logout");
+                        System.out.println("""
+                                1. Sort products
+                                2. Search for a product
+                                3. Display Dashboard
+                                4. Select a product
+                                5. Account Settings
+                                6. View purchase history
+                                7. Logout""");
                         choice = scan.nextLine();
 
-                        if (choice.equals("1")) { // customer wants to sort the marketplace
-                            System.out.println("1. Sale filter\n2. " +
-                                    "Sort by ascending price\n" +
-                                    "3. Sort by descending price\n" +
-                                    "4. Sort by ascending quantity\n" +
-                                    "5. Sort by descending quantity\n" +
-                                    "6. Show normal marketplace\n" +
-                                    "7. Return");
-                            choice = scan.nextLine();
-                            if (choice.equals("1")) {
-                                if (sale) {
-                                    sale = false;
-                                } else {
-                                    sale = true;
-                                }
-                            } else if (choice.equals("2")) {
-                                scenario = "price";
-                                sortBy = "ascending";
-                            } else if (choice.equals("3")) {
-                                scenario = "price";
-                                sortBy = "descending";
-                            } else if (choice.equals("4")) {
-                                scenario = "quantity";
-                                sortBy = "ascending";
-                            } else if (choice.equals("5")) {
-                                scenario = "quantity";
-                                sortBy = "descending";
-                            } else if (choice.equals("6")) {
-                                scenario = "normal";
-                                sortBy = "normal";
-                                sale = false;
-                                searching = false;
-                            }
-                        } else if (choice.equals("2")) {
-                            searching = true;
-                            System.out.println("Please enter a search term:");
-                            search = scan.nextLine();
-                            System.out.println("Searching for products...");
-                        } else if (choice.equals("3")) {
-                            boolean dashboard = true;
-                            sortBy = "normal";
-                            while (dashboard) {
-                                Customer.displayDashboard(storeDirectory, sortBy, purchaseHistory);
-                                System.out.println("1. Sort dashboard\n2. Return to Marketplace");
+                        switch (choice) {
+                            case "1" -> {  // customer wants to sort the marketplace
+                                System.out.println("""
+                                        1. Sale filter
+                                        2. Sort by ascending price
+                                        3. Sort by descending price
+                                        4. Sort by ascending quantity
+                                        5. Sort by descending quantity
+                                        6. Show normal marketplace
+                                        7. Return""");
                                 choice = scan.nextLine();
-                                if (choice.equals("1")) {
-                                    System.out.println("1. Sort by ascending sales\n" +
-                                            "2. Sort by descending sales\n" +
-                                            "3. Return to dashboard menu");
+                                switch (choice) {
+                                    case "1" -> sale = !sale;
+                                    case "2" -> {
+                                        scenario = "price";
+                                        sortBy = "ascending";
+                                    }
+                                    case "3" -> {
+                                        scenario = "price";
+                                        sortBy = "descending";
+                                    }
+                                    case "4" -> {
+                                        scenario = "quantity";
+                                        sortBy = "ascending";
+                                    }
+                                    case "5" -> {
+                                        scenario = "quantity";
+                                        sortBy = "descending";
+                                    }
+                                    case "6" -> {
+                                        scenario = "normal";
+                                        sortBy = "normal";
+                                        sale = false;
+                                        searching = false;
+                                    }
+                                }
+                            }
+                            case "2" -> {
+                                searching = true;
+                                System.out.println("Please enter a search term:");
+                                search = scan.nextLine();
+                                System.out.println("Searching for products...");
+                            }
+                            case "3" -> {
+                                boolean dashboard = true;
+                                sortBy = "normal";
+                                while (dashboard) {
+                                    Customer.displayDashboard(storeDirectory, sortBy, purchaseHistory);
+                                    System.out.println("1. Sort dashboard\n2. Return to Marketplace");
                                     choice = scan.nextLine();
                                     if (choice.equals("1")) {
-                                        sortBy = "ascending";
-                                    } else if (choice.equals("2")) {
-                                        sortBy = "descending";
+                                        System.out.println("""
+                                                1. Sort by ascending sales
+                                                2. Sort by descending sales
+                                                3. Return to dashboard menu""");
+                                        choice = scan.nextLine();
+                                        if (choice.equals("1")) {
+                                            sortBy = "ascending";
+                                        } else if (choice.equals("2")) {
+                                            sortBy = "descending";
+                                        } else {
+                                            sortBy = "normal";
+                                        }
                                     } else {
+                                        dashboard = false;
+                                        scenario = "normal";
                                         sortBy = "normal";
                                     }
-                                } else {
-                                    dashboard = false;
-                                    scenario = "normal";
-                                    sortBy = "normal";
                                 }
                             }
-                        } else if (choice.equals("4")){
-                            System.out.println("Please enter the name of the product:");
-                            String productname = scan.nextLine();
-                            boolean exists = getProductPage(productDirectory, productname);
-                            if (!exists) {
-                                System.out.println("The product does not exist!\n Returning to the marketplace...");
-                            } else {
-                                System.out.println("1. Purchase\n2. Return to market");
-                                choice = scan.nextLine();
-                                if (choice.equals("1")) {
-                                    boolean purchased = customer.purchase(productDirectory, storeDirectory, productname, purchaseHistory);
-                                    if (purchased) {
-                                        System.out.println("The product has been successfully purchased!\nReturning to the marketplace...");
-                                    } else {
-                                        System.out.println("The product could not be purchased!\n Returning to the marketplace...");
-                                    }
+                            case "4" -> {
+                                System.out.println("Please enter the name of the product:");
+                                String productname = scan.nextLine();
+                                boolean exists = getProductPage(productDirectory, productname);
+                                if (!exists) {
+                                    System.out.println("The product does not exist!\n Returning to the marketplace...");
                                 } else {
-                                    System.out.println("Returning to the marketplace...");
-                                }
-                            }
-                        } else if (choice.equals("5")) {
-                            boolean settings = true; // status on whether settings page is running or not
-                            while (settings) {
-                                    System.out.println("1. Delete Account\n2. Edit Account\n3. Return");
+                                    System.out.println("1. Purchase\n2. Return to market");
                                     choice = scan.nextLine();
                                     if (choice.equals("1")) {
-                                        if (deleteAccount(email)) {
-                                            System.out.println("Your account has been deleted!\nLogging out...");
-                                            logged = false;
+                                        boolean purchased = customer.purchase(productDirectory, storeDirectory, productname, purchaseHistory);
+                                        if (purchased) {
+                                            System.out.println("The product has been successfully purchased!\nReturning to the marketplace...");
                                         } else {
-                                            System.out.println("Your account couldn't be deleted!");
+                                            System.out.println("The product could not be purchased!\n Returning to the marketplace...");
                                         }
-                                    } else if (choice.equals("2")) {
-                                        String edit = "";
-                                        String check = "";
-                                        int checking = -1;
-                                        System.out.println("What would you like to change?");
-                                        System.out.println("1. Email\n2. Password\n3. Nickname");
-                                        choice = scan.nextLine();
-                                        checking = Integer.parseInt(choice) - 1;
-                                        if (choice.equals("1")) {
-                                            System.out.println("Enter the updated information:");
-                                            edit = scan.nextLine();
-                                            check = email;
-                                        } else if (choice.equals("2")) {
-                                            System.out.println("Enter the updated password:");
-                                            edit = scan.nextLine();
-                                            check = getAccountInfo(email).get(3);
-                                        } else if (choice.equals("2")) {
-                                            System.out.println("Enter the updated password:");
-                                            edit = scan.nextLine();
-                                            check = password;
-                                        }
-                                        if (editAccount(email, check, edit, checking)) {
-                                            System.out.println("Your account has been updated!");
-                                        } else {
-                                            System.out.println("There was a problem with updating your account.");
-                                        }
-                                    } else if (choice.equals("3")) {
-                                        settings = false;
-                                    }
-                                }
-                            } else if (choice.equals("6")) {
-                            boolean viewingHistory = true;
-                            System.out.println("Showing your purchase history...");
-                            System.out.println("====================");
-                            while (viewingHistory) {
-                                for(Product p: purchaseHistory) {
-                                    System.out.printf("Name: %s\nDescription: %s\nPurchased from %s at $%.2f\n",
-                                            p.getName(), p.getDescription(), p.getStoreName(), p.getPrice());
-                                }
-                                System.out.println("====================");
-                                System.out.println("1. Export Purchase history\n2. Return to marketplace");
-                                choice = scan.nextLine();
-                                if (choice.equals("1")) {
-                                    boolean exported = exportPurchaseHistory(purchaseHistory, accountData.get(2));
-                                    if (exported) {
-                                        System.out.println("Your purchase history has been exported.");
                                     } else {
-                                        System.out.println("There was a problem exporting your purchase history.");
+                                        System.out.println("Returning to the marketplace...");
                                     }
-                                } else {
-                                    viewingHistory = false;
                                 }
                             }
-                        } else if (choice.equals("7")) {
-                            logged = false;
+                            case "5" -> {
+                                boolean settings = true; // status on whether settings page is running or not
+                                while (settings) {
+                                    System.out.println("1. Delete Account\n2. Edit Account\n3. Return");
+                                    choice = scan.nextLine();
+                                    switch (choice) {
+                                        case "1":
+                                            if (deleteAccount(email)) {
+                                                System.out.println("Your account has been deleted!\nLogging out...");
+                                                logged = false;
+                                            } else {
+                                                System.out.println("Your account couldn't be deleted!");
+                                            }
+                                            break;
+                                        case "2":
+                                            String edit = "";
+                                            String check = "";
+                                            int checking;
+                                            System.out.println("What would you like to change?");
+                                            System.out.println("1. Email\n2. Password\n3. Nickname");
+                                            choice = scan.nextLine();
+                                            checking = Integer.parseInt(choice) - 1;
+                                            if (choice.equals("1")) {
+                                                System.out.println("Enter the updated email:");
+                                                edit = scan.nextLine();
+                                                check = email;
+                                            } else if (choice.equals("2")) {
+                                                System.out.println("Enter the updated password:");
+                                                edit = scan.nextLine();
+                                                System.out.println(accountData.get(1));
+                                                check = accountData.get(1);
+                                            } else if (choice.equals("3")) {
+                                                System.out.println("Enter the new nickname:");
+                                                edit = scan.nextLine();
+                                                System.out.println(accountData.get(2));
+                                                check = accountData.get(2);
+                                            }
+                                            if (editAccount(email, check, edit, checking)) {
+                                                System.out.println("Your account has been updated!");
+                                            } else {
+                                                System.out.println("There was a problem with updating your account.");
+                                            }
+                                            break;
+                                        case "3":
+                                            settings = false;
+                                            break;
+                                    }
+                                }
+                            }
+                            case "6" -> {
+                                boolean viewingHistory = true;
+                                System.out.println("Showing your purchase history...");
+                                System.out.println("====================");
+                                while (viewingHistory) {
+                                    for (Product p : purchaseHistory) {
+                                        System.out.printf("Name: %s\nDescription: %s\nPurchased from %s at $%.2f\n",
+                                                p.getName(), p.getDescription(), p.getStoreName(), p.getPrice());
+                                    }
+                                    System.out.println("====================");
+                                    System.out.println("1. Export Purchase history\n2. Return to marketplace");
+                                    choice = scan.nextLine();
+                                    if (choice.equals("1")) {
+                                        boolean exported = exportPurchaseHistory(purchaseHistory, accountData.get(2));
+                                        if (exported) {
+                                            System.out.println("Your purchase history has been exported.");
+                                        } else {
+                                            System.out.println("There was a problem exporting your purchase history.");
+                                        }
+                                    } else {
+                                        viewingHistory = false;
+                                    }
+                                }
+                            }
+                            case "7" -> logged = false;
                         }
                     } else if (accountData.get(3).equals("seller")) {
                         if (first) {
@@ -341,23 +361,25 @@ public class Main {
                                 } else if (choice.equals("2")) {
                                     String edit = "";
                                     String check = "";
-                                    int checking = -1;
+                                    int checking;
                                     System.out.println("What would you like to change?");
                                     System.out.println("1. Email\n2. Password\n3. Nickname");
                                     choice = scan.nextLine();
                                     checking = Integer.parseInt(choice) - 1;
                                     if (choice.equals("1")) {
-                                        System.out.println("Enter the updated information:");
+                                        System.out.println("Enter the updated email:");
                                         edit = scan.nextLine();
                                         check = email;
                                     } else if (choice.equals("2")) {
                                         System.out.println("Enter the updated password:");
                                         edit = scan.nextLine();
-                                        check = getAccountInfo(email).get(3);
-                                    } else if (choice.equals("2")) {
-                                        System.out.println("Enter the updated password:");
+                                        System.out.println(accountData.get(1));
+                                        check = accountData.get(1);
+                                    } else if (choice.equals("3")) {
+                                        System.out.println("Enter the new nickname:");
                                         edit = scan.nextLine();
-                                        check = password;
+                                        System.out.println(accountData.get(2));
+                                        check = accountData.get(2);
                                     }
                                     if (editAccount(email, check, edit, checking)) {
                                         System.out.println("Your account has been updated!");
@@ -403,8 +425,6 @@ public class Main {
                         updateCustomer(email, purchaseHistory, productDirectory, storeDirectory);
                     }
                 }
-                File f = new File("new.txt");
-                f.delete();
                 System.out.println("Goodbye!");
                 on = false;
             }
@@ -464,11 +484,11 @@ public class Main {
     public static boolean createAccount(String email, String password, String nickname, String type) {
         try {
             BufferedWriter bfw = new BufferedWriter(new FileWriter("Accounts.txt", true));
-            bfw.write(String.format("\n%s; %s; %s; %s", email, password, nickname, type));
+            bfw.write(String.format("%s; %s; %s; %s", email, password, nickname, type));
             if (type.equals("customer")) {
-                bfw.write(String.format(";%.2f; %s\n", 0.0, "none"));
-            } else {
-                bfw.write(String.format("; %s", "none"));
+                bfw.write(String.format("; %.2f; %s\n", 0.0, "none"));
+            } else if (type.equals("seller")) {
+                bfw.write(String.format("; %s\n", "none"));
             }
             bfw.close();
             return true;
@@ -492,9 +512,12 @@ public class Main {
 
             String line;
             String[] accountData;
+
             while ((line = r.readLine()) != null) {
                 accountData = line.split("; ");
                 if (accountData[0].equals(email) && accountData[checking].equals(check)) {
+                    System.out.println(accountData[checking]);
+                    System.out.println(check);
                     accountData[checking] = edit;
                     String newline = String.join("; ", accountData);
                     w.write(newline + "\n");
@@ -736,7 +759,7 @@ public class Main {
                 data = line.split("; ");
                 if (data[0].equals(email)) {
                     String ownedStores = "";
-                    for (int i = 0; i < stores.size() - 1; i++) {
+                    for (int i = 0; i < stores.size(); i++) {
                         ownedStores += stores.get(i).getName();
                         if (i < stores.size() - 1) {
                             ownedStores += ", ";
@@ -749,30 +772,31 @@ public class Main {
                     w.write(line + "\n");
                 }
             }
-            originalAccount.delete();
-            newAccount.renameTo(originalAccount);
             r.close();
             w.close();
+            originalAccount.delete();
+            newAccount.renameTo(originalAccount);
 
-            File originalStores = new File("Stores.txt"); // original account file
-            File newStores = new File("newStores.txt"); // new account file without the current account information
-            r = new BufferedReader(new FileReader(originalStores));
-            w = new BufferedWriter(new FileWriter(newStores));
-            while ((line = r.readLine()) != null) {
+            File originalStore = new File("Stores.txt"); // original account file
+            File newStore = new File("newStores.txt"); // new account file without the current account information
+            BufferedReader rr = new BufferedReader(new FileReader(originalStore));
+            BufferedWriter ww = new BufferedWriter(new FileWriter(newStore));
+
+            while ((line = rr.readLine()) != null) {
                 data = line.split("; ");
-                for (Store s : stores) {
-                    if (data[0].equalsIgnoreCase(s.getName())) {
-                        String storeName = s.getName();
-                        String productNames = "";
-                        ArrayList<Product> storeProducts = s.getProducts();
-                        for (int i = 0; i < storeProducts.size() - 1; i++) {
-                            productNames += storeProducts.get(i).getName();
-                            if (i < storeProducts.size() - 1) {
-                                productNames += ", ";
-                            }
+                for (Store s: stores) {
+                    String storeName = s.getName();
+                    String productNames = "";
+                    ArrayList<Product> storeProducts = s.getProducts();
+                    for (int i = 0; i < storeProducts.size(); i++) {
+                        productNames += storeProducts.get(i).getName();
+                        if (i < storeProducts.size() - 1) {
+                            productNames += ", ";
                         }
-                        int sales = s.getsales();
-                        String customernames = "";
+                    }
+                    int sales = s.getsales();
+                    String customernames = "none";
+                    if (s.getCustomers().size() > 0) {
                         ArrayList<String> c = s.getCustomers();
                         for (int i = 0; i < c.size() - 1; i++) {
                             customernames += c.get(i);
@@ -780,16 +804,45 @@ public class Main {
                                 customernames += ", ";
                             }
                         }
-                        w.write(String.format("%s; %s; %d; %s\n", storeName, productNames, sales, customernames));
+                    }
+                    if (storeName.equals(data[0])) {
+                        ww.write(String.format("%s; %s; %d; %s\n", storeName, productNames, sales, customernames));
                     } else {
-                        w.write(line + "\n");
+                        ww.write(line + "\n");
                     }
                 }
             }
-            originalStores.delete();
-            newStores.renameTo(originalStores);
-            r.close();
-            w.close();
+            for (Store s: stores) {
+                String storeName = s.getName();
+                String productNames = "";
+                ArrayList<Product> storeProducts = s.getProducts();
+                for (int i = 0; i < storeProducts.size(); i++) {
+                    productNames += storeProducts.get(i).getName();
+                    if (i < storeProducts.size() - 1) {
+                        productNames += ", ";
+                    }
+                }
+                int sales = s.getsales();
+                String customernames = "none";
+                if (s.getCustomers().size() > 0) {
+                    ArrayList<String> c = s.getCustomers();
+                    for (int i = 0; i < c.size() - 1; i++) {
+                        customernames += c.get(i);
+                        if (i < c.size() - 1) {
+                            customernames += ", ";
+                        }
+                    }
+                }
+                if (isNew(storeName, "store"));
+                    ww.write(String.format("%s; %s; %d; %s\n", storeName, productNames, sales, customernames));
+                }
+            System.out.println("Closing store readers...");
+            rr.close();
+            ww.close();
+            System.out.println("Deleting old file...");
+            originalStore.delete();
+            System.out.println("Renaming new file...");
+            newStore.renameTo(originalStore);
 
             File originalProducts = new File("Products.txt"); // original account file
             File newProducts = new File("newProducts.txt"); // new account file without the current account information
@@ -813,11 +866,12 @@ public class Main {
                     }
                 }
             }
+            r.close();
+            w.close();
             originalProducts.delete();
             newProducts.renameTo(originalProducts);
 
-            r.close();
-            w.close();
+
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error updating data.");
@@ -916,6 +970,31 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error updating data.");
+        }
+    }
+
+    // checks if product or store is new
+    public static boolean isNew(String name, String type) {
+        try {
+            File f;
+            if (type.equals("store")) {
+                f = new File("Stores.txt");
+            } else {
+                f = new File("Products.txt");
+            }
+            BufferedReader r = new BufferedReader(new FileReader(f));
+            String line = "";
+            String data[];
+            while ((line = r.readLine()) != null) {
+                data = line.split("; ");
+                if (name.equalsIgnoreCase(data[0])) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
