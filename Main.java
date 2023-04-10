@@ -227,7 +227,7 @@ public class Main {
                                     System.out.println("1. Export Purchase history\n2. Return to marketplace");
                                     choice = scan.nextLine();
                                     if (choice.equals("1")) {
-                                        boolean exported = exportPurchaseHistory(purchaseHistory, accountData.get(2));
+                                        boolean exported = exportPurchaseHistory(customer.getPurchaseHistory(), accountData.get(2));
                                         if (exported) {
                                             System.out.println("Your purchase history has been exported.");
                                         } else {
@@ -566,7 +566,7 @@ public class Main {
 
     private static void updateSellerProducts(ArrayList<Product> products) {
         try {
-            File originalProducts = new File(".idea/Products.txt");
+            File originalProducts = new File("Products.txt");
             File newProducts = new File("newProducts.txt");
             BufferedReader r = new BufferedReader(new FileReader(originalProducts));
             BufferedWriter w = new BufferedWriter(new FileWriter(newProducts));
@@ -882,6 +882,7 @@ public class Main {
                 double price = p.getPrice();
                 w.write(String.format("%s, %s, $%.2f\n", name, storeName, price));
             }
+            w.close();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -1031,7 +1032,7 @@ public class Main {
             if (type.equals("store")) {
                 f = new File("Stores.txt");
             } else {
-                f = new File(".idea/Products.txt");
+                f = new File("Products.txt");
             }
             BufferedReader r = new BufferedReader(new FileReader(f));
             String line;
