@@ -85,8 +85,7 @@ public class Customer extends UserBase {
     }
 
     private ArrayList<Product> getProducts() {
-        // TODO: 2023/4/9 获得所有商品列表 待实现
-        return null;
+        return AllProducts.getProducts();
     }
 
     /**
