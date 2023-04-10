@@ -6,6 +6,7 @@ public class Product {
     private int quantitySold;
     private double price;
     private double salePrice;
+    private boolean sale;
 
 
     public Product(String name, String storeName, String description, int quantity, double price) {
@@ -15,7 +16,7 @@ public class Product {
         this.quantity = quantity;
         this.price = price;
         this.quantitySold = 0;
-        this.salePrice = -1;
+        this.sale = false;
     }
 
     public String getName() { return name; }
@@ -32,12 +33,11 @@ public class Product {
     public void setDescription(String description) { this.description = description; }
     public void setQuantity(int quantity) { this.quantity = quantity; }
     public void setPrice(double price) { this.price = price; }
-    
-    public void holdSale(double salePrice, int unitsToSell) { 
-        if (unitsToSell < quantitySold) {
-            this.salePrice = salePrice;
-        } else {
-            this.salePrice = -1;
+
+    public void holdSale(int quantityToSell, double salePrice) {
+        this.salePrice = salePrice;
+        while (quantityToSell < quantitySold) {
+            this.sale = true;
         }
     }
 
@@ -48,12 +48,12 @@ public class Product {
 
 
     public String toString() {
-        if ( salePrice == -1) {
-            String format = "Product name: %s\nStore Name: %s\nPrice: %d";
-            return String.format(format, this.name, this.storeName, this.price);
-        } else {
+        if (sale) {
             String format = "Product name: %s\nStore Name: %s\nNew price: %d\nOriginal price: %d";
             return String.format(format, this.name, this.storeName, this.salePrice, this.price);
+        } else {
+            String format = "Product name: %s\nStore Name: %s\nPrice: %d";
+            return String.format(format, this.name, this.storeName, this.price);
         }
     }
 
