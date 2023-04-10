@@ -28,3 +28,25 @@ Data will include a list of customers with the number of items that they have pu
 Sellers can choose to sort the dashboard.
 Sellers can import or export products for their stores using a csv file. 
 All product details should be included, with one row per product. 
+
+
+_______________
+Customer dashboard
+
+Store name, products sold (total), products I(customer) bought
+Store name, products sold (total), products I(customer) bought
+etc
+
+
+_______________
+Seller dashboard(could choose to sort - im guessing this means to either show customers or products(see below))
+
+Store name
+
+customer name, quantity bought
+customer name, quantity bought
+etc
+product name, quantity sold
+product name, quantity sold
+etc
+
