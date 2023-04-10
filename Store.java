@@ -5,6 +5,11 @@ public class Store {
     private String name;
     private ArrayList<Product> products;
     private ArrayList<Product> productsSold;
+    
+    public Store(String name, ArrayList<Product> products) {
+        this.name = name;
+        this.products = products;
+    }
 
     public ArrayList<Product> getProducts() {
         return products;
