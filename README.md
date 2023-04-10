@@ -30,9 +30,9 @@ Data for the economy is split into three files whose values are separated by sem
   # Main.java
     - Provides the user with a menu from which they can choose to login or create an account.
     - After logging in, the class will provide the user with different options based on their role (Seller/Customer).
-    - This class calls on methods from other classes. It is also responsible for saving any user details, products, stores, etc into text files, 
-    in order to save that information for when the user logs out of the program. This class will read from those text files and edit them when 
-    needed, to keep the most up to date marketplace information.
+    - This class calls on methods from other classes. It is also responsible for saving any user details, products, stores, etc 
+    into text files, in order to save that information for when the user logs out of the program. This class will read from those 
+    text files and edit them when needed, to keep the most up to date marketplace information.
   # User.java
     - Interface for returning the email, nickname, password and role of a user.
   # UserBase.java
