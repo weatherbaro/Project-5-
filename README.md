@@ -28,7 +28,9 @@ Data for the economy is split into three files whose values are separated by sem
      - Example: Stapler; Follett's; true; Staples paper; 80; 8.99; 5
 
   # Main.java
-    -
+    - Provides the user with a menu from which they can choose to login or create an account.
+    - After logging in, the class will provide the user with different options based on their role (Seller/Customer).
+    - This class calls on methods from other classes. It is also responsible for saving any user details, products, stores, etc into text files, in order to save that information for when the user logs out of the program. This class will read from those text files and edit them when needed, to keep the most up to date marketplace information.
   # User.java
     - Interface for returning the email, nickname, password and role of a user.
   # UserBase.java
@@ -41,9 +43,9 @@ Data for the economy is split into three files whose values are separated by sem
     - Class that extends UserBase, has functionality for sellers.
     - This includes methods for the creation of stores, viewing the dashboard of stores that a seller has.
   # Store.java
-    - A class for storing a list of products from the store
+    - A class for storing a list of products from the store.
     - Has methods for creating/adding a product, editing or removing products from the store.
-    - Stores a list of customers of that store
+    - Stores a list of customers of that store.
   # Product.java
     - Class that stores all parameters associated with a product, such as its name, price, quantity, etc.
     - Contains the methods for returning the product as it would appear in the marketplace, and the product desctription page.
