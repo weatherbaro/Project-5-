@@ -496,7 +496,7 @@ public class Main {
                 accountData = line.split("; ");
                 if (accountData[0].equals(email) && accountData[checking].equals(check)) {
                     accountData[checking] = edit;
-                    String newline = String.join(", ", accountData);
+                    String newline = String.join("; ", accountData);
                     w.write(newline + "\n");
                 } else {
                     w.write(line + "\n");
@@ -727,7 +727,7 @@ public class Main {
     public static void updateSeller(String email, ArrayList<Store> stores, ArrayList<Product> products) {
         try {
             File originalAccount = new File("Accounts.txt"); // original account file
-            File newAccount = new File("new.txt"); // new account file without the current account information
+            File newAccount = new File("newAccounts.txt"); // new account file without the current account information
             BufferedReader r = new BufferedReader(new FileReader(originalAccount));
             BufferedWriter w = new BufferedWriter(new FileWriter(newAccount));
             String line = "";
@@ -751,9 +751,11 @@ public class Main {
             }
             originalAccount.delete();
             newAccount.renameTo(originalAccount);
+            r.close();
+            w.close();
 
             File originalStores = new File("Stores.txt"); // original account file
-            File newStores = new File("new.txt"); // new account file without the current account information
+            File newStores = new File("newStores.txt"); // new account file without the current account information
             r = new BufferedReader(new FileReader(originalStores));
             w = new BufferedWriter(new FileWriter(newStores));
             while ((line = r.readLine()) != null) {
@@ -786,9 +788,11 @@ public class Main {
             }
             originalStores.delete();
             newStores.renameTo(originalStores);
+            r.close();
+            w.close();
 
             File originalProducts = new File("Products.txt"); // original account file
-            File newProducts = new File("new.txt"); // new account file without the current account information
+            File newProducts = new File("newProducts.txt"); // new account file without the current account information
             r = new BufferedReader(new FileReader(originalProducts));
             w = new BufferedWriter(new FileWriter(newProducts));
             while ((line = r.readLine()) != null) {
@@ -823,7 +827,7 @@ public class Main {
     public static void updateCustomer(String email, ArrayList<Product> history, ArrayList<Product> products, ArrayList<Store> stores) {
         try {
             File originalAccount = new File("Accounts.txt"); // original account file
-            File newAccount = new File("new.txt"); // new account file without the current account information
+            File newAccount = new File("newAccounts.txt"); // new account file without the current account information
             BufferedReader r = new BufferedReader(new FileReader(originalAccount));
             BufferedWriter w = new BufferedWriter(new FileWriter(newAccount));
             String line = "";
@@ -848,7 +852,7 @@ public class Main {
             originalAccount.delete();
             newAccount.renameTo(originalAccount);
             File originalStores = new File("Stores.txt"); // original account file
-            File newStores = new File("new.txt"); // new account file without the current account information
+            File newStores = new File("newStores.txt"); // new account file without the current account information
             r = new BufferedReader(new FileReader(originalStores));
             w = new BufferedWriter(new FileWriter(newStores));
             while ((line = r.readLine()) != null) {
@@ -883,7 +887,7 @@ public class Main {
             newStores.renameTo(originalStores);
 
             File originalProducts = new File("Products.txt"); // original account file
-            File newProducts = new File("new.txt"); // new account file without the current account information
+            File newProducts = new File("newProducts.txt"); // new account file without the current account information
             r = new BufferedReader(new FileReader(originalProducts));
             w = new BufferedWriter(new FileWriter(newProducts));
             while ((line = r.readLine()) != null) {
