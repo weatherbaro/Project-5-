@@ -122,4 +122,95 @@ public class Customer extends UserBase {
     public String getRole() {
         return "customer";
     }
+    
+    // placed method for displaying customer menu inside customer class
+    public static void displayMarket(String property, String sortBy,
+                                     boolean sale,
+                                     boolean searching, String search) {
+        try {
+            File productfile = new File("Products.txt"); // product data file
+            BufferedReader r = new BufferedReader(new FileReader(productfile));
+            String line = "";
+            String[] productData;
+
+            String name;
+            String store;
+            String description;
+            boolean onSale;
+            int quantity;
+            double price;
+
+            ArrayList<Product> products = new ArrayList<>();
+            while ((line = r.readLine()) != null) {
+                productData = line.split("; ", 6);
+                name = productData[0];
+                store = productData[1];
+                onSale = Boolean.parseBoolean(productData[2]);
+                description = productData[3];
+                quantity = Integer.parseInt(productData[4]);
+                price = Double.parseDouble(productData[5]);
+                products.add(new Product(name, store, onSale, description, quantity, price));
+            }
+            if (sale) {
+                System.out.println("Getting products on sale...");
+            }
+            if (property.equals("normal") && sortBy.equals("normal")) {
+                System.out.println("Now displaying the marketplace...\n====================");
+            } else {
+                System.out.println("Sorting marketplace...\n====================");
+                // Sort Arraylist of Products with selection sort
+                int n = products.size();
+                for (int i = 0; i < n-1; i++) {
+                    int min_idx = i;
+                    for (int j = i+1; j < n; j++)
+                        if (property.equals("quantity")) {
+                            if (products.get(j).getQuantity() < products.get(min_idx).getQuantity()) {
+                                min_idx = j;
+                            }
+                        } else if (property.equals("price")) {
+                            if (products.get(j).getPrice() < products.get(min_idx).getPrice()) {min_idx = j;
+                            }
+                        }
+                    Collections.swap(products, min_idx, i);
+                }
+                // reverses list to descending if needed
+                if (sortBy.equals("descending")) {
+                    Collections.reverse(products);
+                }
+            }
+            for (Product p: products) {
+                if (sale) {
+                    if (p.isOnSale()) {
+                        if (searching) {
+                            if (p.getName().toLowerCase().contains(search.toLowerCase()) ||
+                                    p.getStoreName().toLowerCase().contains(search.toLowerCase()) ||
+                                    p.getDescription().toLowerCase().contains(search.toLowerCase())) {
+                                System.out.printf("%s - %s - %.2f\n", p.getName(), p.getStoreName(), p.getPrice());
+                            }
+                        } else {
+                            System.out.printf("%s - %s - %.2f\n", p.getName(), p.getStoreName(), p.getPrice());
+                        }
+                    }
+                } else if (searching) {
+                    if (p.getName().toLowerCase().contains(search.toLowerCase()) ||
+                            p.getStoreName().toLowerCase().contains(search.toLowerCase()) ||
+                                    p.getDescription().toLowerCase().contains(search.toLowerCase())) {
+                        if (sale) {
+                            if (p.isOnSale()) {
+                                System.out.printf("%s - %s - %.2f\n", p.getName(), p.getStoreName(), p.getPrice());
+                            }
+                        } else {
+                            System.out.printf("%s - %s - %.2f\n", p.getName(), p.getStoreName(), p.getPrice());
+                        }
+                    }
+                } else {
+                    System.out.printf("%s - %s - %.2f\n", p.getName(), p.getStoreName(), p.getPrice());
+                }
+            }
+            System.out.println("====================");
+            r.close();
+        } catch (Exception e) {
+            System.out.println("There was an error displaying the market page!");
+        }
+    }
 }
