@@ -6,7 +6,6 @@ import java.util.Scanner;
 // another way would be a static global arraylist of accounts classes that
 // contains the specific seller or buyer and all of their info in one object
 public class Main {
-
     public static void main(String[] args) throws IOException {
         Scanner scan = new Scanner(System.in);
 
@@ -19,6 +18,10 @@ public class Main {
 
         String scenario = "";
         String sortBy = "";
+        boolean sale = false;
+        boolean searching = false;
+        String search = null;
+
         ArrayList<String> accountData = null;
         while (on) {
             System.out.println("1. Login\n2. Create An Account\n3. Exit"); // right now user is going to enter just email and password
@@ -42,22 +45,26 @@ public class Main {
                 while (logged) {
                     if (accountData.get(3).equals("customer")) { // if the logged account is a customer
                         Customer customer = new Customer(email, password, accountData.get(2), Double.parseDouble(accountData.get(4)));
-                        customer.displayMarket(scenario, sortBy);
+                        customer.displayMarket(scenario, sortBy, sale, searching, search);
                         System.out.println("1. Sort market\n2. Search for a product\n" +
                                     "3. Display Dashboard\n4. Select a product\n5. Account Settings\n6. Logout");
                         choice = scan.nextLine();
-
+                        
                         if (choice.equals("1")) { // customer wants to sort the marketplace
-                            System.out.println("1. Show products on sale only\n2. " +
+                            System.out.println("1. Sale filter\n2. " +
                                     "Sort by ascending price\n" +
                                     "3. Sort by descending price\n" +
                                     "4. Sort by ascending quantity\n" +
                                     "5. Sort by descending quantity\n" +
-                                    "6. Return");
+                                    "6. Show normal marketplace\n" +
+                                    "7. Return");
                             choice = scan.nextLine();
                             if (choice.equals("1")) {
-                                scenario = "sale";
-                                sortBy = "normal";
+                                if (sale) {
+                                    sale = false;
+                                } else {
+                                    sale = true;
+                                }
                             } else if (choice.equals("2")) {
                                 scenario = "price";
                                 sortBy = "ascending";
@@ -70,7 +77,17 @@ public class Main {
                             } else if (choice.equals("5")) {
                                 scenario = "quantity";
                                 sortBy = "descending";
+                            } else if (choice.equals("6")) {
+                                scenario = "normal";
+                                sortBy = "normal";
+                                sale = false;
+                                searching = false;
                             }
+                        } else if (choice.equals("2")) {
+                            searching = true;
+                            System.out.println("Please enter a search term:");
+                            search = scan.nextLine();
+                            System.out.println("Searching for products...");
                         } else if (choice.equals("5")) {
                             boolean settings = true; // status on whether settings page is running or not
                             while (settings) {
@@ -266,7 +283,5 @@ public class Main {
             return null;
         }
     }
-    // Displays Marketplace of products by printing
-
 
 }
