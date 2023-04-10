@@ -45,8 +45,8 @@ Data for the economy is split into three files whose values are separated by sem
     -
 
 # Contributions:
-Student 1 - Submitted Report on Brightspace.
-Student 2 - Submitted Vocareum workspace.
+- YiXun Lu - Submitted Report on Brightspace.
+- Willie Chen - Submitted Vocareum workspace.
 
 
 ERASE THIS LINE IF YOU SEE IT
