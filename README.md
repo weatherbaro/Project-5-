@@ -40,13 +40,11 @@ Data for the economy is split into three files whose values are separated by sem
   # Store.java
     -
   # Product.java
-    -
+    - Class that stores all parameters associated with a product, such as its name, price, quantity, etc.
   # NotAProductException.java
-    -
+    - Class that checks whether a product that was created/added by a seller contains all needed parameters.
 
 # Contributions:
 - YiXun Lu - Submitted Report on Brightspace.
 - Willie Chen - Submitted Vocareum workspace.
 
-
-ERASE THIS LINE IF YOU SEE IT
