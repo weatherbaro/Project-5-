@@ -38,9 +38,13 @@ Data for the economy is split into three files whose values are separated by sem
   # Seller.java
     -
   # Store.java
-    -
+    - A class for storing a list of products from the store
+    - Has methods for creating/adding a product, editing or removing products from the store.
+    - Stores a list of customers of that store
   # Product.java
     - Class that stores all parameters associated with a product, such as its name, price, quantity, etc.
+    - Contains the methods for returning the product as it would appear in the marketplace, and the product desctription page.
+    - Contains code that provides sellers with the option to hold a sale until a quantity of the product is sold. 
   # NotAProductException.java
     - Class that checks whether a product that was created/added by a seller contains all needed parameters.
 
