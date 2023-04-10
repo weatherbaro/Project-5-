@@ -1,0 +1,5 @@
+Macy's; Shovel, Suit, Glasses; 6; none
+Willie's; Towel, Suitcase; 10001; none
+Staples; Computer, Pencils, Markers; 237; none
+Follett's; Textbook, Ruler, Stapler; 5001; none
+Target; Milk, Eggs, Apple; 368; none
