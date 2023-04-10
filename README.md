@@ -26,3 +26,5 @@ Data for the economy is split into three files whose values are separated by sem
   - Products.txt
     - [Name of the Product]; [Name of the product's store]; [Boolean for if product is on sale]; [Description of Product]; [Quantity of product in stock]; [Price of product]; [Number of Products sold thus far]
      - Example: Stapler; Follett's; true; Staples paper; 80; 8.99; 5
+
+ERASE THIS LINE IF YOU SEE IT
