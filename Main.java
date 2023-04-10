@@ -17,6 +17,9 @@ public class Main {
         boolean created = false; // checks if account creation was successful
         boolean on = true; // controls if program is running or not
 
+        String scenario = "";
+        String sortBy = "";
+        ArrayList<String> accountData = null;
         while (on) {
             System.out.println("1. Login\n2. Create An Account\n3. Exit"); // right now user is going to enter just email and password
             choice = scan.nextLine();
@@ -26,55 +29,94 @@ public class Main {
                 String email = scan.nextLine();
                 System.out.println("Enter your password:");
                 String password = scan.nextLine();
-                // TODO: account initialization
+
                 if (trylogging(email, password)) {
                     logged = true;
-                    ArrayList<String> accountData = getAccountInfo(email);
+                    accountData = getAccountInfo(email); // load account info into arraylist
                     if (accountData.get(3).equals("customer")) {
-                        Customer customer = new Customer();
-                    } else {
-                        Seller seller = new Seller();
+                        scenario = "normal";
+                        sortBy = "normal";
                     }
                 }
-                /////////////////////////////////////////
+
                 while (logged) {
-                    // Primary Interface based on user class
-                    // display menu from seller or user method
-                    choice = scan.nextLine();
-                    if (choice.equals("1")) {
-                        if (deleteAccount(email)) {
-                            System.out.println("Your account has been deleted!\nLogging out...");
-                            logged = false;
-                        } else {
-                            System.out.println("Your account couldn't be deleted!");
-                        }
-                    } else if (choice.equals("2")) {
-                        String edit = "";
-                        String check = "";
-                        int checking = -1;
-                        System.out.println("What would you like to change?");
-                        System.out.println("1. Email\n2. Password\n3. Nickname");
+                    if (accountData.get(3).equals("customer")) { // if the logged account is a customer
+                        Customer customer = new Customer(email, password, accountData.get(2), Double.parseDouble(accountData.get(4)));
+                        customer.displayMarket(scenario, sortBy);
+                        System.out.println("1. Sort market\n2. Search for a product\n" +
+                                    "3. Display Dashboard\n4. Select a product\n5. Account Settings\n6. Logout");
                         choice = scan.nextLine();
-                        checking = Integer.parseInt(choice) - 1;
-                        if (choice.equals("1")) {
-                            System.out.println("Enter the updated information:");
-                            edit = scan.nextLine();
-                            check = email;
-                        } else if (choice.equals("2")) {
-                            System.out.println("Enter the updated password:");
-                            edit = scan.nextLine();
-                            check = getAccountInfo(email).get(3);
-                        } else if (choice.equals("2")) {
-                            System.out.println("Enter the updated password:");
-                            edit = scan.nextLine();
-                            check = password;
+
+                        if (choice.equals("1")) { // customer wants to sort the marketplace
+                            System.out.println("1. Show products on sale only\n2. " +
+                                    "Sort by ascending price\n" +
+                                    "3. Sort by descending price\n" +
+                                    "4. Sort by ascending quantity\n" +
+                                    "5. Sort by descending quantity\n" +
+                                    "6. Return");
+                            choice = scan.nextLine();
+                            if (choice.equals("1")) {
+                                scenario = "sale";
+                                sortBy = "normal";
+                            } else if (choice.equals("2")) {
+                                scenario = "price";
+                                sortBy = "ascending";
+                            } else if (choice.equals("3")) {
+                                scenario = "price";
+                                sortBy = "descending";
+                            } else if (choice.equals("4")) {
+                                scenario = "quantity";
+                                sortBy = "ascending";
+                            } else if (choice.equals("5")) {
+                                scenario = "quantity";
+                                sortBy = "descending";
+                            }
+                        } else if (choice.equals("5")) {
+                            boolean settings = true; // status on whether settings page is running or not
+                            while (settings) {
+                                System.out.println("1. Delete Account\n2. Edit Account\n3. Return");
+                                choice = scan.nextLine();
+                                if (choice.equals("1")) {
+                                    if (deleteAccount(email)) {
+                                        System.out.println("Your account has been deleted!\nLogging out...");
+                                        logged = false;
+                                    } else {
+                                        System.out.println("Your account couldn't be deleted!");
+                                    }
+                                } else if (choice.equals("2")) {
+                                    String edit = "";
+                                    String check = "";
+                                    int checking = -1;
+                                    System.out.println("What would you like to change?");
+                                    System.out.println("1. Email\n2. Password\n3. Nickname");
+                                    choice = scan.nextLine();
+                                    checking = Integer.parseInt(choice) - 1;
+                                    if (choice.equals("1")) {
+                                        System.out.println("Enter the updated information:");
+                                        edit = scan.nextLine();
+                                        check = email;
+                                    } else if (choice.equals("2")) {
+                                        System.out.println("Enter the updated password:");
+                                        edit = scan.nextLine();
+                                        check = getAccountInfo(email).get(3);
+                                    } else if (choice.equals("2")) {
+                                        System.out.println("Enter the updated password:");
+                                        edit = scan.nextLine();
+                                        check = password;
+                                    }
+                                    if (editAccount(email, check, edit, checking)) {
+                                        System.out.println("Your account has been updated!");
+                                    } else {
+                                        System.out.println("There was a problem with updating your account.");
+                                    }
+                                } else if (choice.equals("3")) {
+                                    settings = false;
+                                }
+                            }
+                        } else if (choice.equals("6")) {
+                            logged = false;
                         }
-                        if (editAccount(email, check, edit, checking)) {
-                            System.out.println("Your account has been updated!");
-                        } else {
-                            System.out.println("There was a problem with updating your account.");
-                        }
-                    } else if (choice.equals("3")) {
+                    } else if (accountData.get(3).equals("seller")) {
                         logged = false;
                     }
                 }
@@ -112,7 +154,7 @@ public class Main {
             String line = "";
             String[] accountData;
             while ((line = bfr.readLine()) != null) {
-                accountData = line.split(", ", 4);
+                accountData = line.split("; ", 4);
                 if (accountData[0].equals(email) && accountData[1].equals(password)) {
                     System.out.println("Login Successful!");
                     System.out.printf("Welcome back, %s\n", accountData[2]);
@@ -140,7 +182,7 @@ public class Main {
 
             String line;
             while((line = r.readLine()) != null) {
-                if(!(line.split(", ", 4)[0].equals(email))) {
+                if(!(line.split("; ", 4)[0].equals(email))) {
                     w.write(line + "\n");
                 }
             }
@@ -182,7 +224,7 @@ public class Main {
             String line;
             String[] accountData;
             while ((line = r.readLine()) != null) {
-                accountData = line.split(", ", 4);
+                accountData = line.split("; ", 4);
                 if (accountData[0].equals(email) && accountData[checking].equals(check)) {
                     accountData[checking] = edit;
                     String newline = String.join(", ", accountData);
@@ -210,7 +252,7 @@ public class Main {
             String line = "";
             String[] accountData;
             while ((line = bfr.readLine()) != null) {
-                accountData = line.split(", ", 4);
+                accountData = line.split("; ", 5);
                 if (accountData[0].equals(email)) {
                     for (String data: accountData) {
                         accountInfo.add(data);
@@ -224,4 +266,7 @@ public class Main {
             return null;
         }
     }
+    // Displays Marketplace of products by printing
+
+
 }
