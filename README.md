@@ -55,6 +55,52 @@ Data for the economy is split into three files whose values are separated by sem
   # NotAProductException.java
     - Class that checks whether a product that was created/added by a seller contains all needed parameters.
 
+# Testing:
+Since our program works with a main method, testing was done manually.
+Below are some examples of the testing we have done. Each comma below indicates next input after the program prints a message.
+  1: User creates a seller account, logs in and creates a store, closes program 
+  - Program prints "Welcome!", "=====Login Menu=====\n1. Login\n2. Create An Account\n3. Exit"
+  - User inputs: "2" (create account), "seller@purdue.edu", "password", "IUsucks", "1"
+  - After this the program should print "Your new account has been successfully created!",
+   "=====Login Menu=====\n1. Login\n2. Create An Account\n3. Exit"
+  - User inputs "3", program prints "Goodbye!"
+  
+  
+  2: Same user logs in and creates a store and a product
+  - Program prints "Welcome!", "=====Login Menu=====\n1. Login\n2. Create An Account\n3. Exit"
+  - User inputs "1", "seller@purdue.edu", "password"
+  - Program prints """\n1. Create a store\n2. Select a store\n3. Display Dashboard\n4. Account Settings\n5. Logout"""
+  - User inputs "1", "Purdue Bookstore"
+  - Program prints "Your new store has been created!", """\n1. Create a store\n2. Select a store\n3. Display Dashboard\n4. Account Settings\n5. Logout"""
+  - User inputs "2", "Purdue Bookstore"
+  - Program prints "1. Create a product\n2. Edit a product\n3. Delete a product\n4. Choose a different store\n5. Return to Seller Menu"
+  - User inputs "1", "CS book", "Book for learning computer science basics", "100", "10.99"
+  - Program prints "Product has been added.", 
+    "1. Create a product\n2. Edit a product\n3. Delete a product\n4. Choose a different store\n5. Return to Seller Menu"
+  - User inputs "5", program """\n1. Create a store\n2. Select a store\n3. Display Dashboard\n4. Account Settings\n5. Logout""", user "5"
+  - Program prints "=====Login Menu=====\n1. Login\n2. Create An Account\n3. Exit"
+  - User inputs "3", program prints "Goodbye!"
+
+
+  3: Another user creates a customer account and buys a product "CS book"
+  - Program prints "Welcome!", "=====Login Menu=====\n1. Login\n2. Create An Account\n3. Exit"
+  - User inputs "2", "customer@purdue.edu", "12345678", "student", "2"
+  - After this the program should print "Your new account has been successfully created!",
+   "=====Login Menu=====\n1. Login\n2. Create An Account\n3. Exit"
+  - User inputs "1", "customer@purdue.edu", "12345678"
+  - Program prints """ 1. Sort products\n2. Search for a product\n3.Display Dashboard\n4. Select a product\n5. Account Settings\n6. View purchase history\n7. Logout"""
+  - User inputs "4", program: "Please enter the name of the product:", user: "shovel", program: 
+  "The product does not exist!\n Returning to the marketplace..."
+  - Program then prints """ 1. Sort products\n2. Search for a product\n3.Display Dashboard\n4. Select a product\n5. Account Settings\n6. View purchase history\n7. Logout"""
+  -  User inputs "4", program: "Please enter the name of the product:", user: "CS book", program: "1. Purchase\n2. Return to market"
+  -  User inputs "1", program prints "The product has been successfully purchased!\nReturning to the marketplace..."
+  -  """ 1. Sort products\n2. Search for a product\n3.Display Dashboard\n4. Select a product\n5. Account Settings\n6. View purchase history\n7. Logout"""
+  -  User inputs "7"
+  - Program prints "=====Login Menu=====\n1. Login\n2. Create An Account\n3. Exit"
+  - User inputs "3", program prints "Goodbye!"
+
+
+
 # Contributions:
 - YiXun Lu - Submitted Report on Brightspace.
 - Willie Chen - Submitted Vocareum workspace.
