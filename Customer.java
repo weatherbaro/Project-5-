@@ -1,3 +1,5 @@
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -5,11 +7,16 @@ public class Customer extends UserBase {
 
     private double balance;
     private ArrayList<Product> purchaseHistory;
+    private ObjectOutputStream oos;
+    private ObjectInputStream ois;
 
-    public Customer(String email, String password, String nickname, double balance, ArrayList<Product> purchaseHistory) {
+    public Customer(String email, String password, String nickname, double balance, ArrayList<Product> purchaseHistory,
+        ObjectInputStream ois, ObjectOutputStream oos) {
         super(email, nickname, password);
         this.balance = balance;
         this.purchaseHistory = purchaseHistory;
+        this.ois = ois;
+        this.oos = oos;
     }
 
     public ArrayList<Product> getPurchaseHistory() {
@@ -25,16 +32,20 @@ public class Customer extends UserBase {
     }
 
     // placed method for displaying customer menu inside customer class
-    public static void displayMarket(ArrayList<Product> products,
+    public void displayMarket(ArrayList<Product> products,
                                      String property,
                                      String sortBy,
                                      boolean sale,
                                      boolean searching,
                                      String search) {
         try {
+            DisplayMarketCondition condition = new DisplayMarketCondition(products, property, sortBy, sale, searching, search);
+            oos.writeObject(condition);
+
             if (sale) {
                 System.out.println("Getting products on sale...");
             }
+            
             if (property.equals("normal") && sortBy.equals("normal")) {
                 System.out.println("Now displaying the marketplace...\n====================");
             } else {
@@ -59,6 +70,7 @@ public class Customer extends UserBase {
                     Collections.reverse(products);
                 }
             }
+            ArrayList<String> productStrings = new ArrayList<>();
             for (Product p: products) {
                 if (sale) {
                     if (p.isOnSale()) {
@@ -67,9 +79,11 @@ public class Customer extends UserBase {
                                     p.getStoreName().toLowerCase().contains(search.toLowerCase()) ||
                                     p.getDescription().toLowerCase().contains(search.toLowerCase())) {
                                 System.out.printf("%s - %s - $%.2f\n", p.getStoreName(), p.getName(), p.getPrice());
+                                productStrings.add(String.format("%s - %s - $%.2f\n", p.getStoreName(), p.getName(), p.getPrice()));
                             }
                         } else {
                             System.out.printf("%s - %s - $%.2f\n", p.getStoreName(), p.getName(), p.getPrice());
+                            productStrings.add(String.format("%s - %s - $%.2f\n", p.getStoreName(), p.getName(), p.getPrice()));
                         }
                     }
                 } else if (searching) {
@@ -79,15 +93,19 @@ public class Customer extends UserBase {
                         if (sale) {
                             if (p.isOnSale()) {
                                 System.out.printf("%s - %s - $%.2f\n", p.getStoreName(), p.getName(), p.getPrice());
+                                productStrings.add(String.format("%s - %s - $%.2f\n", p.getStoreName(), p.getName(), p.getPrice()));
                             }
                         } else {
                             System.out.printf("%s - %s - $%.2f\n", p.getStoreName(), p.getName(), p.getPrice());
+                            productStrings.add(String.format("%s - %s - $%.2f\n", p.getStoreName(), p.getName(), p.getPrice()));
                         }
                     }
                 } else {
                     System.out.printf("%s - %s - $%.2f\n", p.getStoreName(), p.getName(), p.getPrice());
+                    productStrings.add(String.format("%s - %s - $%.2f\n", p.getStoreName(), p.getName(), p.getPrice()));
                 }
             }
+            oos.writeObject(productStrings);
             System.out.println("====================");
         } catch (Exception e) {
             System.out.println("There was an error displaying the market page!");
