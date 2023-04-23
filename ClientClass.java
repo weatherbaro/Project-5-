@@ -8,19 +8,99 @@ public class ClientClass {
     
   }
   
-  private static final String[] loginMenu = {"Login", "Create An Account", "Exit"};
-    private static final String[] customerMenu = {"1. Sort products", "2. Search for a product", "3. Display Dashboard",
-            "4. Select a product", "5. Account Settings", "6. View purchase history", "Exit"};
-    private static final String[] productSort = {"1. Sale filter", "2. Sort by ascending price",
-            "3. Sort by descending price", "4. Sort by ascending quantity", "5. Sort by descending quantity",
-            "6. Show normal marketplace", "Return"};
-    private static final String[] dashboard = {"1. Sort by ascending sales", "2. Sort by descending sales",
-            "3. Return to dashboard menu"};
-    private static final String[] sellerMenu = {"1. Create a store", "2. Select a store", "3. Display Dashboard",
-            "4. Account Settings", "5. Logout"};
-    private static final String[] storeMenu = {"1. Create a product", "2. Edit a product", "3. Delete a product",
-            "4. Choose a different store", "5. Return to Seller Menu"};
-  
+ public static void showWelcomeMessageDialog() {
+        JOptionPane.showMessageDialog(null, "Welcome to the Marketplace",
+                "Marketplace", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static void showFarewellMessageDialog() {
+        JOptionPane.showMessageDialog(null, "Goodbye, have a nice day!",
+                "Marketplace", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static int mainMenuInputDialog() {
+        int choice = 0;
+        String[] options = {"Login", "Create Account", "Exit"};
+        int x = JOptionPane.showOptionDialog(null, "Select what you would like to do",
+                "Marketplace", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options,
+                options[0]);
+        switch (x) {
+            case JOptionPane.YES_OPTION:
+                choice = 1;
+                break;
+            case JOptionPane.NO_OPTION:
+                choice = 2;
+                break;
+            case JOptionPane.CANCEL_OPTION, JOptionPane.CLOSED_OPTION:
+                choice = 3;
+                break;
+        }
+        return choice;
+    }
+
+    public static String emailLoginInputDialog() {
+        String choice;
+        choice = JOptionPane.showInputDialog(null, "Please enter your email",
+                "Marketplace Login", JOptionPane.QUESTION_MESSAGE);
+        return choice;
+    }
+
+    public static String passwordLoginInputDialog() {
+        String choice;
+        choice = JOptionPane.showInputDialog(null, "Please enter your password",
+                "Marketplace Login", JOptionPane.QUESTION_MESSAGE);
+        return choice;
+    }
+
+    public static String emailCreateInputDialog() {
+        String choice;
+        choice = JOptionPane.showInputDialog(null, "Please enter an email",
+                "Account Creation", JOptionPane.QUESTION_MESSAGE);
+        return choice;
+    }
+
+    public static String passCreateInputDialog() {
+        String choice;
+        choice = JOptionPane.showInputDialog(null, "Please enter a password",
+                "Account Creation", JOptionPane.QUESTION_MESSAGE);
+        return choice;
+    }
+
+    public static String nameCreateInputDialog() {
+        String choice;
+        choice = JOptionPane.showInputDialog(null, "Please enter a username",
+                "Account Creation", JOptionPane.QUESTION_MESSAGE);
+        return choice;
+    }
+
+    public static String roleCreateInputDialog() {
+        String choice;
+        String[] roles = {"Customer", "Seller"};
+        choice = (String) JOptionPane.showInputDialog(null, "Select your role",
+                "Account Creation", JOptionPane.QUESTION_MESSAGE, null, roles, roles[0]);
+        return choice;
+    }
+
+    public static void accountSuccessMessageDialog() {
+        JOptionPane.showMessageDialog(null, "Your new account has been successfully created!",
+                "Account Creation", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static void accountFailMessageDialog() {
+        JOptionPane.showMessageDialog(null, "There was a problem with creating your account.",
+                "Account Creation", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+  ///////////////////////////////
+
+    public static String customerMainInputDialog() {
+        String choice;
+        String[] customerMenu = {"1. Sort products", "2. Search for a product", "3. Display Dashboard",
+                "4. Select a product", "5. Account Settings", "6. View purchase history", "Exit"};
+        choice = (String) JOptionPane.showInputDialog(null, "What would you like to do?",
+                "Customer Menu", JOptionPane.QUESTION_MESSAGE, null, customerMenu, customerMenu[0]);
+        return choice;
+    }
   
   
   
