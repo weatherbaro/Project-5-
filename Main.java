@@ -98,38 +98,40 @@ public class Main implements Runnable{
         }
     }
 
-    private void updateCustomerHistory(String email, ArrayList<Product> history) throws IOException {
-        try {
-            File originalAccount = new File("Accounts.txt"); // original account file
-            File newAccount = new File("newAccounts.txt"); // new account file without the current account information
-            BufferedReader r = new BufferedReader(new FileReader(originalAccount));
-            BufferedWriter w = new BufferedWriter(new FileWriter(newAccount));
-            String line;
-            String[] data;
-            while ((line = r.readLine()) != null) {
-                data = line.split("; ");
-                if (data[0].equals(email)) {
-                    String purchased = "";
-                    for (int i = 0; i < history.size(); i++) {
-                        purchased += history.get(i).getName();
-                        if (i < history.size() - 1) {
-                            purchased += ", ";
+    private static void updateCustomerHistory(String email, ArrayList<Product> history) {
+        if (!history.isEmpty()) {
+            try {
+                File originalAccount = new File("Accounts.txt"); // original account file
+                File newAccount = new File("newAccounts.txt"); // new account file without the current account information
+                BufferedReader r = new BufferedReader(new FileReader(originalAccount));
+                BufferedWriter w = new BufferedWriter(new FileWriter(newAccount));
+                String line;
+                String[] data;
+                while ((line = r.readLine()) != null) {
+                    data = line.split("; ");
+                    if (data[0].equals(email)) {
+                        String purchased = "";
+                        for (int i = 0; i < history.size(); i++) {
+                            purchased += history.get(i).getName();
+                            if (i < history.size() - 1) {
+                                purchased += ", ";
+                            }
                         }
+                        data[5] = purchased;
+                        String newline = String.join("; ", data);
+                        w.write(newline + "\n");
+                    } else {
+                        w.write(line + "\n");
                     }
-                    data[5] = purchased;
-                    String newline = String.join("; ", data);
-                    w.write(newline + "\n");
-                } else {
-                    w.write(line + "\n");
                 }
+                w.close();
+                r.close();
+                originalAccount.delete();
+                newAccount.renameTo(originalAccount);
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Error updating customer purchase history!");
             }
-            w.close();
-            r.close();
-            originalAccount.delete();
-            newAccount.renameTo(originalAccount);
-        } catch (Exception e) {
-            e.printStackTrace();
-            oos.writeObject("Error updating customer purchase history!");
         }
     }
 
