@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * Project 4 Marketplace
  *
  * @version 2023-04-07
- * @author Willie Chen
+ * @author Willie Chen, Yixun Lu
  */
 public class Main implements Runnable{
     
@@ -130,58 +130,17 @@ public class Main implements Runnable{
                 newAccount.renameTo(originalAccount);
             } catch (Exception e) {
                 e.printStackTrace();
-                System.out.println("Error updating customer purchase history!");
+                oos.writeObject("Error updating customer purchase history!");
             }
         }
     }
 
-    private void updateSellerProducts(ArrayList<Product> products) throws IOException {
+    private static void updateSellerStores(ArrayList<Store> allStores, ArrayList<Store> ownedstores) {
         try {
-            File originalProducts = new File("Products.txt");
-            File newProducts = new File("newProducts.txt");
-            BufferedReader r = new BufferedReader(new FileReader(originalProducts));
-            BufferedWriter w = new BufferedWriter(new FileWriter(newProducts));
-            String line;
-            String[] data;
-            while ((line = r.readLine()) != null) {
-                data = line.split("; ");
-                for (Product p : products) {
-                    if (data[0].equalsIgnoreCase(p.getName())) {
-                        String productName = p.getName();
-                        String StoreName = p.getStoreName();
-                        boolean onSale = p.isOnSale();
-                        String description = p.getDescription();
-                        int quantity = p.getQuantity();
-                        double price = p.getPrice();
-                        int sold = p.getQuantitySold();
-                        w.write(String.format("%s; %s; %s; %s; %d; %.2f, %d\n",
-                                productName, StoreName, onSale, description, quantity, price, sold));
-                    } else {
-                        w.write(line + "\n");
-                    }
-                }
-            }
-            r.close();
-            w.close();
-            originalProducts.delete();
-            newProducts.renameTo(originalProducts);
-        } catch (Exception e) {
-            e.printStackTrace();
-            oos.writeObject("Error updating product data!");
-        }
-    }
-
-    private void updateSellerStores(ArrayList<Store> stores) throws IOException {
-        try {
-            File originalStore = new File("Stores.txt");
-            File newStore = new File("newStores.txt");
-            BufferedReader r = new BufferedReader(new FileReader(originalStore));
-            BufferedWriter w = new BufferedWriter(new FileWriter(newStore));
-            String line;
-            String[] data;
-            while ((line = r.readLine()) != null) {
-                data = line.split("; ");
-                for (Store s : stores) {
+            FileWriter fw = new FileWriter("Stores.txt", false);
+            PrintWriter pw = new PrintWriter(fw, false);
+            pw.flush();
+            for (Store s: allStores) {
                     String storeName = s.getName();
                     String productNames = "";
                     ArrayList<Product> storeProducts = s.getProducts();
@@ -202,80 +161,164 @@ public class Main implements Runnable{
                             }
                         }
                     }
-                    if (storeName.equals(data[0])) {
-                        w.write(String.format("%s; %s; %d; %s\n", storeName, productNames, sales, customernames));
-                    } else {
-                        w.write(line + "\n");
-                    }
-                }
-            }
-            for (Store s : stores) {
-                String storeName = s.getName();
-                String productNames = "";
-                ArrayList<Product> storeProducts = s.getProducts();
-                for (int i = 0; i < storeProducts.size(); i++) {
-                    productNames += storeProducts.get(i).getName();
-                    if (i < storeProducts.size() - 1) {
-                        productNames += ", ";
-                    }
-                }
-                int sales = s.getsales();
-                String customernames = "none";
-                if (s.getCustomers().size() > 0) {
-                    ArrayList<String> c = s.getCustomers();
-                    for (int i = 0; i < c.size() - 1; i++) {
-                        customernames += c.get(i);
-                        if (i < c.size() - 1) {
-                            customernames += ", ";
+                    for (Store owned: ownedstores) {
+                        if (owned.getName().equalsIgnoreCase(s.getName())) {
+                            sales = owned.getsales();
+                            productNames = "";
+                            storeProducts = owned.getProducts();
+                            for (int i = 0; i < storeProducts.size(); i++) {
+                                productNames += storeProducts.get(i).getName();
+                                if (i < storeProducts.size() - 1) {
+                                    productNames += ", ";
+                                }
+                            }
+                            customernames = "none";
+                            if (s.getCustomers().size() > 0) {
+                                ArrayList<String> c = s.getCustomers();
+                                for (int i = 0; i < c.size() - 1; i++) {
+                                    customernames += c.get(i);
+                                    if (i < c.size() - 1) {
+                                        customernames += ", ";
+                                    }
+                                }
+                            }
                         }
                     }
+                    pw.write(String.format("%s; %s; %d; %s\n", storeName, productNames, sales, customernames));
+            }
+            for (Store s: ownedstores) {
+                boolean isNew = true;
+                for (Store st: allStores) {
+                    if (s.getName().equalsIgnoreCase(st.getName())) {
+                        isNew = false;
+                    }
                 }
-                if (isNew(storeName, "store")) {
-                    w.write(String.format("%s; %s; %d; %s\n", storeName, productNames, sales, customernames));
+                if (isNew) {
+                    String storeName = s.getName();
+                    String productNames = "";
+                    ArrayList<Product> storeProducts = s.getProducts();
+                    for (int i = 0; i < storeProducts.size(); i++) {
+                        productNames += storeProducts.get(i).getName();
+                        if (i < storeProducts.size() - 1) {
+                            productNames += ", ";
+                        }
+                    }
+                    int sales = s.getsales();
+                    String customernames = "none";
+                    if (s.getCustomers().size() > 0) {
+                        ArrayList<String> c = s.getCustomers();
+                        for (int i = 0; i < c.size() - 1; i++) {
+                            customernames += c.get(i);
+                            if (i < c.size() - 1) {
+                                customernames += ", ";
+                            }
+                        }
+                    }
+                    pw.write(String.format("%s; %s; %d; %s\n", storeName, productNames, sales, customernames));
                 }
             }
-            r.close();
-            w.close();
-            originalStore.delete();
-            newStore.renameTo(originalStore);
+            pw.close();
+            fw.close();
         } catch(Exception e) {
             e.printStackTrace();
             oos.writeObject("Error updating store data!");
         }
     }
 
-    private void updateSellerAccount(String email, ArrayList<Store> stores) throws IOException {
+    private static void updateSellerProducts(ArrayList<Product> allproducts, ArrayList<Product> ownedproducts) {
+        String productName;
+        String StoreName;
+        boolean onSale;
+        String description;
+        int quantity;
+        double price;
+        int sold;
         try {
-            File originalAccount = new File("Accounts.txt"); // original account file
-            File newAccount = new File("newAccounts.txt"); // new account file without the current account information
-            BufferedReader r = new BufferedReader(new FileReader(originalAccount));
-            BufferedWriter w = new BufferedWriter(new FileWriter(newAccount));
-            String line;
-            String[] data;
-            while ((line = r.readLine()) != null) {
-                data = line.split("; ");
-                if (data[0].equals(email)) {
-                    String ownedStores = "";
-                    for (int i = 0; i < stores.size(); i++) {
-                        ownedStores += stores.get(i).getName();
-                        if (i < stores.size() - 1) {
-                            ownedStores += ", ";
-                        }
+            FileWriter fw = new FileWriter("Products.txt", false);
+            PrintWriter pw = new PrintWriter(fw, false);
+            pw.flush();
+
+            // first updates current products owned by the seller
+            for (Product p: allproducts) {
+                productName = p.getName();
+                StoreName = p.getStoreName();
+                onSale = p.isOnSale();
+                description = p.getDescription();
+                quantity = p.getQuantity();
+                price = p.getPrice();
+                sold = p.getQuantitySold();
+                for (Product owned: ownedproducts) {
+                    if (owned.getName().equalsIgnoreCase(p.getName())) {
+                        quantity = owned.getQuantity();
+                        price = owned.getPrice();
+                        sold = owned.getQuantitySold();
                     }
-                    data[4] = ownedStores;
-                    String newaccount = String.join("; ", data);
-                    w.write(newaccount + "\n");
-                } else {
-                    w.write(line + "\n");
+                }
+                pw.write(String.format("%s; %s; %s; %s; %d; %.2f; %d\n",
+                        productName, StoreName, onSale, description, quantity, price, sold));
+            }
+            // then updates new products into data file
+            for (Product owned: ownedproducts) {
+                boolean isNew = true;
+                for (Product p: allproducts) {
+                    if (p.getName().equalsIgnoreCase(owned.getName())) {
+                        isNew = false;
+                    }
+                }
+                if (isNew) {
+                    productName = owned.getName();
+                    StoreName = owned.getStoreName();
+                    onSale = owned.isOnSale();
+                    description = owned.getDescription();
+                    quantity = owned.getQuantity();
+                    price = owned.getPrice();
+                    sold = owned.getQuantitySold();
+                    pw.write(String.format("%s; %s; %s; %s; %d; %.2f; %d\n",
+                            productName, StoreName, onSale, description, quantity, price, sold));
                 }
             }
-            w.close();
-            r.close();
-            originalAccount.delete();
-            newAccount.renameTo(originalAccount);
+            pw.close();
+            fw .close();
         } catch (Exception e) {
             e.printStackTrace();
-            oos.writeObject("Error updating account data.");
+            oos.writeObject("Error updating product data!");
+        }
+    }
+
+    private static void updateSellerAccount(String email, ArrayList<Store> stores) {
+        if (!stores.isEmpty()) {
+            try {
+                File originalAccount = new File("Accounts.txt"); // original account file
+                File newAccount = new File("newAccounts.txt"); // new account file without the current account information
+                BufferedReader r = new BufferedReader(new FileReader(originalAccount));
+                BufferedWriter w = new BufferedWriter(new FileWriter(newAccount));
+                String line;
+                String[] data;
+                while ((line = r.readLine()) != null) {
+                    data = line.split("; ");
+                    if (data[0].equals(email)) {
+                        String ownedStores = "";
+                        for (int i = 0; i < stores.size(); i++) {
+                            ownedStores += stores.get(i).getName();
+                            if (i < stores.size() - 1) {
+                                ownedStores += ", ";
+                            }
+                        }
+                        data[4] = ownedStores;
+                        String newaccount = String.join("; ", data);
+                        w.write(newaccount + "\n");
+                    } else {
+                        w.write(line + "\n");
+                    }
+                }
+                w.close();
+                r.close();
+                originalAccount.delete();
+                newAccount.renameTo(originalAccount);
+            } catch (Exception e) {
+                e.printStackTrace();
+                oos.writeObject("Error updating account data.");
+            }
         }
     }
 
@@ -594,31 +637,6 @@ public class Main implements Runnable{
             }
         }
         return false;
-    }
-
-    // checks if product or store is new
-    public static boolean isNew(String name, String type) {
-        try {
-            File f;
-            if (type.equals("store")) {
-                f = new File("Stores.txt");
-            } else {
-                f = new File("Products.txt");
-            }
-            BufferedReader r = new BufferedReader(new FileReader(f));
-            String line;
-            String[] data;
-            while ((line = r.readLine()) != null) {
-                data = line.split("; ");
-                if (name.equalsIgnoreCase(data[0])) {
-                    return false;
-                }
-            }
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 
     ObjectOutputStream oos;
@@ -1069,8 +1087,8 @@ public class Main implements Runnable{
                     if (!(accountData == null)) {
                         if (accountData.get(3).equals("seller")) {
                             updateSellerAccount(email, ownedStores);
-                            updateSellerStores(ownedStores);
-                            updateSellerProducts(ownedProducts);
+                            updateSellerStores(storeDirectory, ownedStores);
+                            updateSellerProducts(productDirectory, ownedProducts);
                         } else if (accountData.get(3).equals("customer")) {
                             updateCustomerHistory(email, purchaseHistory);
                             updateCustomerProducts(productDirectory);
