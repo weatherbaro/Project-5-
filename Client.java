@@ -17,13 +17,16 @@ public class Client {
         ois = new ObjectInputStream(socket.getInputStream());
         oos = new ObjectOutputStream(socket.getOutputStream());
         showMessageDialog(ois.readObject());
+        
+        showWelcomeMessageDialog();
+        
         while (true) {
-            int select = showOptionDialog(null, "Login Menu", LOGIN_MENU);
+            int select = mainMenuInputDialog();
 
-            if (select == 0) {
+            if (select == 1) {
                 // login
                 login();
-            } else if (select == 1) {
+            } else if (select == 2) {
                 // create an account
                 createAccount();
             } else {
@@ -38,29 +41,29 @@ public class Client {
     private static void createAccount() throws IOException, ClassNotFoundException {
         // 通知服务端选择创建账号
         oos.writeObject("2");
-        String email = showInputDialog("Enter your email:");
+        String email = emailCreateInputDialog();
         oos.writeObject(email);
-        String password = showInputDialog("Enter your password:");
+        String password = passCreateInputDialog();
         oos.writeObject(password);
-        String nickname = showInputDialog("Enter your nickname:");
+        String nickname = nameCreateInputDialog());
         oos.writeObject(nickname);
-        Object[] roles = {"seller", "customer"};
-        int role = showOptionDialog("Enter your role:", "Account Creation Section", new Object[]{"seller", "customer"});
+        int role = roleCreateInputDialog();
         oos.writeObject(roles[role]);
+        
         String createResult = (String) ois.readObject();
         if ("success".equalsIgnoreCase(createResult)) {
-            showMessageDialog("Your new account has been successfully created!");
+            accountSuccessMessageDialog();
         } else {
-            showMessageDialog("There was a problem with creating your account.");
+            accountFailMessageDialog();
         }
     }
 
     private static void  login() throws IOException, ClassNotFoundException {
         // 通知服务端选择登录
         oos.writeObject("1");
-        String email = showInputDialog("Enter your email:");
+        String email = emailLoginInputDialog();
         oos.writeObject(email);
-        String password = showInputDialog("Enter your password:");
+        String password = passwordLoginInputDialog();
         oos.writeObject(password);
         // 等待登录结果
         String loginResult = (String) ois.readObject();
@@ -78,7 +81,7 @@ public class Client {
             }
         } else {
             // 登录失败
-            showMessageDialog("There was an error logging in!");
+            loginErrorMessageDialog();
         }
 
     }
@@ -393,5 +396,94 @@ public class Client {
     private static String showInputDialog(String message) {
         return JOptionPane.showInputDialog(message);
     }
+    -----------------------------------
 
+    public static void showWelcomeMessageDialog() {
+        JOptionPane.showMessageDialog(null, "Welcome to the Marketplace",
+                "Marketplace", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static void showFarewellMessageDialog() {
+        JOptionPane.showMessageDialog(null, "Goodbye, have a nice day!",
+                "Marketplace", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static int mainMenuInputDialog() {
+        int choice = 0;
+        String[] options = {"Login", "Create Account", "Exit"};
+        int x = JOptionPane.showOptionDialog(null, "Select what you would like to do",
+                "Marketplace", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options,
+                options[0]);
+        switch (x) {
+            case JOptionPane.YES_OPTION:
+                choice = 1;
+                break;
+            case JOptionPane.NO_OPTION:
+                choice = 2;
+                break;
+            case JOptionPane.CANCEL_OPTION, JOptionPane.CLOSED_OPTION:
+                choice = 3;
+                break;
+        }
+        return choice;
+    }
+
+    public static String emailLoginInputDialog() {
+        String choice;
+        choice = JOptionPane.showInputDialog(null, "Please enter your email",
+                "Marketplace Login", JOptionPane.QUESTION_MESSAGE);
+        return choice;
+    }
+
+    public static String passwordLoginInputDialog() {
+        String choice;
+        choice = JOptionPane.showInputDialog(null, "Please enter your password",
+                "Marketplace Login", JOptionPane.QUESTION_MESSAGE);
+        return choice;
+    }
+
+    public static String emailCreateInputDialog() {
+        String choice;
+        choice = JOptionPane.showInputDialog(null, "Please enter an email",
+                "Account Creation", JOptionPane.QUESTION_MESSAGE);
+        return choice;
+    }
+
+    public static String passCreateInputDialog() {
+        String choice;
+        choice = JOptionPane.showInputDialog(null, "Please enter a password",
+                "Account Creation", JOptionPane.QUESTION_MESSAGE);
+        return choice;
+    }
+
+    public static String nameCreateInputDialog() {
+        String choice;
+        choice = JOptionPane.showInputDialog(null, "Please enter a username",
+                "Account Creation", JOptionPane.QUESTION_MESSAGE);
+        return choice;
+    }
+
+    public static String roleCreateInputDialog() {
+        String choice;
+        String[] roles = {"Customer", "Seller"};
+        choice = (String) JOptionPane.showInputDialog(null, "Select your role",
+                "Account Creation", JOptionPane.QUESTION_MESSAGE, null, roles, roles[0]);
+        return choice;
+    }
+
+    public static void accountSuccessMessageDialog() {
+        JOptionPane.showMessageDialog(null, "Your new account has been successfully created!",
+                "Account Creation", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static void accountFailMessageDialog() {
+        JOptionPane.showMessageDialog(null, "There was a problem with creating your account.",
+                "Account Creation", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    public static void loginErrorMessageDialog() {
+        JOptionPane.showMessageDialog(null, "You entered the wrong login or password",
+                "Marketplace Login", JOptionPane.ERROR_MESSAGE);
+    }
+    
 }
