@@ -82,29 +82,18 @@ public class Client {
     }
 
     private static void seller() throws IOException, ClassNotFoundException {
-        // TODO: 2023/4/23 GUI 1. Create a store
-        //                     2. Select a store
-        //                     3. Display Dashboard
-        //                     4. Account Settings
-        //                     5. Logout
-        int choice = getChoice();
+        
+        int choice = sellerMenuInputDialog();
         oos.writeObject(choice);
         if (choice == 1) {
-            // TODO: 2023/4/23 GUI Enter the name for the store
-            String storeName = null;
+            String storeName = storeCreateInputDialog();
             oos.writeObject(storeName);
-            // TODO: 2023/4/23 GUI Your new store has been created!
+            storeSuccessMessageDialog();
         } else if (choice == 2) {
-            // TODO: 2023/4/23 GUI Enter the name for the store
-            String storeName = null;
+            String storeName = storeInputDialog();
             oos.writeObject(storeName);
             while (true) {
-                // TODO: 2023/4/23 GUI 1. Create a product
-                //                     2. Edit a product
-                //                     3. Delete a product
-                //                     4. Choose a different store
-                //                     5. Return to Seller Menu
-                choice = getChoice();
+                choice = storeMenuInputDialog();
                 oos.writeObject(choice + "");
                 if (choice == 1) {
                     // TODO: 2023/4/23 GUI Enter the name of the product:
@@ -114,10 +103,10 @@ public class Client {
                     String des = null;
                     oos.writeObject(des);
                     // TODO: 2023/4/23 GUI Enter the quantity of the product:
-                    int quantity;
+                    int quantity ;
                     oos.writeInt(quantity);
                     // TODO: 2023/4/23 GUI Enter the price of the product:
-                    double price;
+                    double price ;
                     oos.writeDouble(price);
                 } else if (choice == 2) {
                     // TODO: 2023/4/23 GUI Enter the name of the product:
@@ -340,8 +329,7 @@ public class Client {
         int choice = getChoice();
         oos.writeObject(choice + "");
         if (choice == 1) {
-            // TODO: 2023/4/22 GUI  1. Sort by ascending sales 2. Sort by descending sale 3. Return to dashboard menu
-            choice = getChoice();
+            choice = dashboardInputDialog();
             oos.writeObject(choice + "");
         }
     }
@@ -356,18 +344,12 @@ public class Client {
         oos.writeObject(search);
     }
 
-    private static final String[] SORT_PRODUCTS_MENU = {"1. Sale filter", "2. Sort by ascending price",
-        "3. Sort by descending price", "4. Sort by ascending quantity", "5. Sort by descending quantity",
-        "6. Show normal marketplace", "7. Return"};
 
     private static void sortProducts() throws IOException {
-        int choice = 1 + showOptionDialog("", "Sort product menu", SORT_PRODUCTS_MENU);
+        int choice = productSortInputDialog();
         oos.writeObject(choice + "");
 
     }
-
-    private static final String[] CUSTOMER_MENU = new String[] {"1. Sort products",
-        "2. Search for a product", "3. Display Dashboard", "4. Select a product", "5. Account Settings", "6. View purchase history", "7. Logout"};
 
     private static void displayMarket() throws IOException, ClassNotFoundException {
         DisplayMarketCondition condition = (DisplayMarketCondition) ois.readObject();
@@ -496,12 +478,46 @@ public class Client {
                 "4. Select a product", "5. Account Settings", "6. View purchase history", "Exit"};
         String choice = (String) JOptionPane.showInputDialog(null, "What would you like to do?",
                 "Customer Menu", JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-        int decision = 1 + Arrays.asList(options).indexOf(choice);
-        return decision;
+        int x = 1 + Arrays.asList(options).indexOf(choice);
+        return x;
     }
     
+    public static int productSortInputDialog() {
+        String[] productSort = {"1. Sale filter", "2. Sort by ascending price",
+                "3. Sort by descending price", "4. Sort by ascending quantity", "5. Sort by descending quantity",
+                "6. Show normal marketplace", "Return"};
+        String choice = (String) JOptionPane.showInputDialog(null, "How would you like to sort products?",
+                "Product Sort Menu", JOptionPane.QUESTION_MESSAGE, null, productSort, productSort[0]);
+        int x = 1 + Arrays.asList(productSort).indexOf(choice);
+        return x;
+    }
     
+    public static int dashboardInputDialog() {
+        String[] dashboard = {"1. Sort by ascending sales", "2. Sort by descending sales",
+                "3. Return to dashboard menu"};
+        String choice = (String) JOptionPane.showInputDialog(null, "How do you want to sort sales?",
+                "Product Sort Menu", JOptionPane.QUESTION_MESSAGE, null, dashboard, dashboard[0]);
+        int x = 1 + Arrays.asList(dashboard).indexOf(choice);
+        return x;
+    }
     
+    public static int sellerMenuInputDialog() {
+        String[] sellerMenu = {"1. Create a store", "2. Select a store", "3. Display Dashboard",
+                "4. Account Settings", "5. Logout"};
+        String choice = (String) JOptionPane.showInputDialog(null, "What would you like to do?",
+                "Seller Menu", JOptionPane.QUESTION_MESSAGE, null, sellerMenu, sellerMenu[0]);
+        int x = 1 + Arrays.asList(sellerMenu).indexOf(choice);
+        return x;
+    }
+    
+    public static int storeMenuInputDialog() {
+        String[] storeMenu = {"1. Create a product", "2. Edit a product", "3. Delete a product",
+                "4. Choose a different store", "5. Return to Seller Menu"};
+        String choice = (String) JOptionPane.showInputDialog(null, "What would you like to do?",
+                "Store Menu", JOptionPane.QUESTION_MESSAGE, null, storeMenu, storeMenu[0]);
+        int x = 1 + Arrays.asList(storeMenu).indexOf(choice);
+        return x;
+    }
     
     
     
