@@ -10,6 +10,22 @@ public class Client {
 
     static ObjectInputStream ois;
     static ObjectOutputStream oos;
+    
+    //product creation
+    JTextField xname = new JTextField(5);
+    JTextField xdescription = new JTextField(5);
+    JTextField xquantity = new JTextField(5);
+    JTextField xprice = new JTextField(5);
+    JPanel xproduct = new JPanel();
+    xproduct.setLayout(new GridLayout(4,1));
+    xproduct.add(new JLabel("Name:"));
+    xproduct.add(xname);
+    xproduct.add(new JLabel("Description:"));
+    xproduct.add(xdescription);
+    xproduct.add(new JLabel("Quantity:"));
+    xproduct.add(xquantity);
+    xproduct.add(new JLabel("Price:"));
+    xproduct.add(xprice);
 
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
@@ -96,18 +112,31 @@ public class Client {
                 choice = storeMenuInputDialog();
                 oos.writeObject(choice + "");
                 if (choice == 1) {
-                    // TODO: 2023/4/23 GUI Enter the name of the product:
-                    String pName = null;
+                    
+                    String pName;
+                    String des;
+                    int quantity;
+                    double price;
+                    
+                    //Product creation jpanel
+                    int result = JOptionPane.showConfirmDialog(null, product, "Product Creation", JOptionPane.OK_CANCEL_OPTION);
+                    if (result == JOptionPane.OK_OPTION) {
+                        if (xname.getText() == null || xdescription.getText() == null || xquantity.getText() == null || xprice.getText() == null) {
+                            productFailMessageDialog();
+                        } else {
+                            pname = xname.getText();
+                            des = xdescription.getText();
+                            quantity = xquantity.getText();
+                            price = xprice.getText();
+                        }
+                    }
+                    
                     oos.writeObject(pName);
-                    // TODO: 2023/4/23 GUI Enter the description of the product:
-                    String des = null;
                     oos.writeObject(des);
-                    // TODO: 2023/4/23 GUI Enter the quantity of the product:
-                    int quantity ;
                     oos.writeInt(quantity);
-                    // TODO: 2023/4/23 GUI Enter the price of the product:
-                    double price ;
                     oos.writeDouble(price);
+                    
+                    
                 } else if (choice == 2) {
                     // TODO: 2023/4/23 GUI Enter the name of the product:
                     String pName = null;
@@ -463,14 +492,7 @@ public class Client {
                 "Marketplace Login", JOptionPane.ERROR_MESSAGE);
     }
     
-    public static String customerMainInputDialog() {
-        String choice;
-        String[] customerMenu = {"1. Sort products", "2. Search for a product", "3. Display Dashboard",
-                "4. Select a product", "5. Account Settings", "6. View purchase history", "Exit"};
-        choice = (String) JOptionPane.showInputDialog(null, "What would you like to do?",
-                "Customer Menu", JOptionPane.QUESTION_MESSAGE, null, customerMenu, customerMenu[0]);
-        return choice;
-    }
+   
     -------------------------
         
     public static int customerMainInputDialog() {
@@ -510,6 +532,25 @@ public class Client {
         return x;
     }
     
+    public static String storeCreateInputDialog() {
+        String choice;
+        choice = JOptionPane.showInputDialog(null, "Please enter a name for your store",
+                "Store Creation", JOptionPane.QUESTION_MESSAGE);
+        return choice;
+    }
+
+    public static void storeSuccessMessageDialog() {
+        JOptionPane.showMessageDialog(null, "Your new store has been successfully created!",
+                "Store Creation", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static String storeInputDialog() {
+        String choice;
+        choice = JOptionPane.showInputDialog(null, "Please enter the name of your store",
+                "Store", JOptionPane.QUESTION_MESSAGE);
+        return choice;
+    }
+    
     public static int storeMenuInputDialog() {
         String[] storeMenu = {"1. Create a product", "2. Edit a product", "3. Delete a product",
                 "4. Choose a different store", "5. Return to Seller Menu"};
@@ -519,6 +560,10 @@ public class Client {
         return x;
     }
     
+    public static void productFailMessageDialog() {
+        JOptionPane.showMessageDialog(null, "Error: please enter product details in all fields.",
+                "Product Creation", JOptionPane.ERROR_MESSAGE);
+    }
     
     
 }
