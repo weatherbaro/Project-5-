@@ -4,13 +4,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Client {
 
     static ObjectInputStream ois;
     static ObjectOutputStream oos;
 
-    private static final String[] LOGIN_MENU = {"1. Login", "2. Create An Account", "3. Exit"};
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         Socket socket = new Socket("localhost", 1000);
@@ -31,7 +31,7 @@ public class Client {
                 createAccount();
             } else {
                 // exit
-                showMessageDialog("Goodbye!");
+                showFarewellMessageDialog();
                 break;
             }
 
@@ -56,22 +56,18 @@ public class Client {
         } else {
             accountFailMessageDialog();
         }
+        
     }
 
     private static void  login() throws IOException, ClassNotFoundException {
-        // 通知服务端选择登录
         oos.writeObject("1");
         String email = emailLoginInputDialog();
         oos.writeObject(email);
         String password = passwordLoginInputDialog();
         oos.writeObject(password);
-        // 等待登录结果
         String loginResult = (String) ois.readObject();
         if ("success".equalsIgnoreCase(loginResult)) {
-            // 登录成功
-            showMessageDialog("Login Successful!");
             ArrayList<String> accountData = (ArrayList<String>) ois.readObject();
-            // TODO: 2023/4/20
             if (accountData.get(3).equals("customer")) {
                 // customer
                 customer();
@@ -80,7 +76,6 @@ public class Client {
                 seller();
             }
         } else {
-            // 登录失败
             loginErrorMessageDialog();
         }
 
@@ -224,8 +219,8 @@ public class Client {
     private static void customer() throws IOException, ClassNotFoundException {
         while (true) {
             displayMarket();
-
-            int choice = 1+ showOptionDialog("", "customer menu", CUSTOMER_MENU);
+            
+            int choice = customerMainInputDialog();
             oos.writeObject(choice + "");
             if (1 == choice) {
                 sortProducts();
@@ -485,5 +480,29 @@ public class Client {
         JOptionPane.showMessageDialog(null, "You entered the wrong login or password",
                 "Marketplace Login", JOptionPane.ERROR_MESSAGE);
     }
+    
+    public static String customerMainInputDialog() {
+        String choice;
+        String[] customerMenu = {"1. Sort products", "2. Search for a product", "3. Display Dashboard",
+                "4. Select a product", "5. Account Settings", "6. View purchase history", "Exit"};
+        choice = (String) JOptionPane.showInputDialog(null, "What would you like to do?",
+                "Customer Menu", JOptionPane.QUESTION_MESSAGE, null, customerMenu, customerMenu[0]);
+        return choice;
+    }
+    -------------------------
+        
+    public static int customerMainInputDialog() {
+        String[] options = {"1. Sort products", "2. Search for a product", "3. Display Dashboard",
+                "4. Select a product", "5. Account Settings", "6. View purchase history", "Exit"};
+        String choice = (String) JOptionPane.showInputDialog(null, "What would you like to do?",
+                "Customer Menu", JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        int decision = 1 + Arrays.asList(options).indexOf(choice);
+        return decision;
+    }
+    
+    
+    
+    
+    
     
 }
