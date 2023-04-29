@@ -138,36 +138,27 @@ public class Client {
                     
                     
                 } else if (choice == 2) {
-                    // TODO: 2023/4/23 GUI Enter the name of the product:
-                    String pName = null;
+                    String pName = productInputDialog();
                     oos.writeObject(pName);
-                    // TODO: 2023/4/23 GUI  What would you like to change about the product?
-                    // TODO: 2023/4/23 GUI  1.Name\n2. Description\n3. Quantity\n4. Price
-                    choice = getChoice();
+                    choice = changeProductInputDialog();
                     oos.writeObject(choice + "");
                     if (choice == 1) {
-                        // TODO: 2023/4/23 GUI Enter the new name for the product:
-                        String newName;
+                        String newName = pNameInputDialog();
                         oos.writeObject(newName);
                     } else if (choice == 2){
-                        // TODO: 2023/4/23 GUI Enter the new description for the product:
-                        String newDes;
+                        String newDes = pDesInputDialog();
                         oos.writeObject(newDes);
                     } else if (choice == 3) {
-                        // TODO: 2023/4/23 GUI Enter the new quantity for the product:
-                        int newQuantity;
+                        int newQuantity = pQuanInputDialog();
                         oos.writeInt(newQuantity);
                     } else if (choice == 4) {
-                        // TODO: 2023/4/23 GUI Enter the new price for the product:
-                        double newPrice;
+                        double newPrice = pPriceInputDialog();
                         oos.writeDouble(newPrice);
                     }
-                    // TODO: 2023/4/23 GUI The product has been edited.
                 } else if (choice == 3) {
-                    // TODO: 2023/4/23 GUI Enter the name of the product to be deleted:
-                    String pName;
+                    String pName = productInputDialog();
                     oos.writeObject(pName);
-                    // TODO: 2023/4/23 GUI The product has been deleted.
+                    pDeleteMessageDialog();
                 } else if (choice == 4) {
                     String selectedStore = storeInputDialog();
                     oos.writeObject(selectedStore);
@@ -189,39 +180,33 @@ public class Client {
             }
         } else if (choice == 4) {
             while (true) {
-                // TODO: 2023/4/23 GUI 1. Delete Account\n2. Edit Account\n3. Return
-                choice = getChoice();
+                choice = accountMenuInputDialog();
                 oos.writeObject(choice + "");
                 if (choice == 1) {
                     boolean deleteAccount = ois.readBoolean();
                     if (deleteAccount) {
-                        // TODO: 2023/4/23 GUI Your account has been deleted!\nLogging out...
+                        accDeleteMessageDialog();
                     } else {
-                        // TODO: 2023/4/23 GUI Your account couldn't be deleted!
+                        accDeleteErrMessageDialog();
                     }
                 } else if (choice == 2) {
-                    // TODO: 2023/4/23 GUI What would you like to change?
-                    // TODO: 2023/4/23 GUI 1. Email\n2. Password\n3. Nickname
-                    choice = getChoice();
+                    choice = changeAccountInputDialog();
                     oos.writeObject(choice + "");
                     if (choice == 1) {
-                        // TODO: 2023/4/23 GUI Enter the updated email:
-                        String edit;
+                        String edit = accEmailInputDialog();
                         oos.writeObject(edit);
                     } else if (choice == 2) {
-                        // TODO: 2023/4/23 GUI Enter the updated password:
-                        String edit;
+                        String edit = accPassInputDialog();
                         oos.writeObject(edit);
                     } else if (choice == 3) {
-                        // TODO: 2023/4/23 GUI Enter the new nickname:
-                        String edit;
+                        String edit = accNameInputDialog();
                         oos.writeObject(edit);
                     }
                     boolean editAccount = ois.readBoolean();
                     if (editAccount) {
-                        // TODO: 2023/4/23 GUI Your account has been updated!
+                        accUpMessageDialog();
                     } else {
-                        // TODO: 2023/4/23 GUI There was a problem with updating your account.
+                        accUpErrMessageDialog();
                     }
                 } else {
                     break;
@@ -564,6 +549,113 @@ public class Client {
         JOptionPane.showMessageDialog(null, "Error: please enter product details in all fields.",
                 "Product Creation", JOptionPane.ERROR_MESSAGE);
     }
+    
+    public static String productInputDialog() {
+        String choice;
+        choice = JOptionPane.showInputDialog(null, "Please enter the name of the product",
+                "Store", JOptionPane.QUESTION_MESSAGE);
+        return choice;
+    }
+
+    public static int changeProductInputDialog() {
+        String[] storeMenu = {"1.Name", "2. Description", "3. Quantity", "4. Price"};
+        String choice = (String) JOptionPane.showInputDialog(null, "What would you like to change?",
+                "Product", JOptionPane.QUESTION_MESSAGE, null, storeMenu, storeMenu[0]);
+        int x = 1 + Arrays.asList(storeMenu).indexOf(choice);
+        return x;
+    }
+    
+    public static int changeAccountInputDialog() {
+        String[] account = {"1. Name", "2. Password", "3. Nickname"};
+        String choice = (String) JOptionPane.showInputDialog(null, "What would you like to change?",
+                "Store", JOptionPane.QUESTION_MESSAGE, null, account, account[0]);
+        int x = 1 + Arrays.asList(account).indexOf(choice);
+        return x;
+    }
+
+    public static int accountMenuInputDialog() {
+        String[] menu = {"1. Delete Account", "2. Edit Account", "3. Return"};
+        String choice = (String) JOptionPane.showInputDialog(null, "What would you like to change?",
+                "Store", JOptionPane.QUESTION_MESSAGE, null, menu, menu[0]);
+        int x = 1 + Arrays.asList(menu).indexOf(choice);
+        return x;
+    }
+
+    public static String pNameInputDialog() {
+        String choice;
+        choice = JOptionPane.showInputDialog(null, "Enter the new name of the product",
+                "Product", JOptionPane.QUESTION_MESSAGE);
+        return choice;
+    }
+
+    public static String pDesInputDialog() {
+        String choice;
+        choice = JOptionPane.showInputDialog(null, "Enter the new description of the product",
+                "Product", JOptionPane.QUESTION_MESSAGE);
+        return choice;
+    }
+
+    public static int pQuanInputDialog() {
+        int choice;
+        choice = Integer.parseInt(JOptionPane.showInputDialog(null, "Enter the new quantity of the product",
+                "Product", JOptionPane.QUESTION_MESSAGE));
+        return choice;
+    }
+
+    public static double pPriceInputDialog() {
+        double choice;
+        choice = Double.parseDouble(JOptionPane.showInputDialog(null, "Enter the new price of the product",
+                "Product", JOptionPane.QUESTION_MESSAGE));
+        return choice;
+    }
+
+    public static void pDeleteMessageDialog() {
+        JOptionPane.showMessageDialog(null, "The product has been deleted.",
+                "Product", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    public static String accEmailInputDialog() {
+        String choice;
+        choice = JOptionPane.showInputDialog(null, "Enter your new email",
+                "Account", JOptionPane.QUESTION_MESSAGE);
+        return choice;
+    }
+
+    public static String accPassInputDialog() {
+        String choice;
+        choice = JOptionPane.showInputDialog(null, "Enter your new password",
+                "Account", JOptionPane.QUESTION_MESSAGE);
+        return choice;
+    }
+
+    public static int accNameInputDialog() {
+        int choice;
+        choice = Integer.parseInt(JOptionPane.showInputDialog(null, "Enter your new nickname",
+                "Account", JOptionPane.QUESTION_MESSAGE));
+        return choice;
+    }
+
+    public static void accUpMessageDialog() {
+        JOptionPane.showMessageDialog(null, "Your account has been updated!",
+                "Account", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static void accUpErrMessageDialog() {
+        JOptionPane.showMessageDialog(null, "There was a problem updating your account, try again.",
+                "Account", JOptionPane.WARNING_MESSAGE);
+    }
+
+    public static void accDeleteMessageDialog() {
+        JOptionPane.showMessageDialog(null, "Your account has been deleted. Logging out...",
+                "Account", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static void accDeleteErrMessageDialog() {
+        JOptionPane.showMessageDialog(null, "Your account could not be deleted",
+                "Account", JOptionPane.WARNING_MESSAGE);
+    }
+    
+    
     
     
 }
