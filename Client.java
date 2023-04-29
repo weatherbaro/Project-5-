@@ -270,34 +270,28 @@ public class Client {
             if (choice == 1) {
                 boolean delete = ois.readBoolean();
                 if (delete) {
-                    // TODO: 2023/4/22 GUI Your account has been deleted!\nLogging out...
+                    accDeleteMessageDialog();
                 } else {
-                    // TODO: 2023/4/22 GUI Your account couldn't be deleted!
+                    accDeleteErrMessageDialog();
                 }
             } else if (choice == 2) {
-                // TODO: 2023/4/22 GUI What would you like to change?
-                // TODO: 2023/4/22 GUI 1. Email\n2. Password\n3. Nickname
-                choice = getChoice();
+                choice = changeAccountInputDialog();
                 oos.writeObject(choice + "");
                 if (choice == 1) {
-                    // TODO: 2023/4/22 GUI Enter the updated email:
-                    // TODO: 2023/4/22 getEdit
-                    String edit = null;
+                    String edit = accEmailInputDialog();
                     oos.writeObject(edit);
                 } else if (choice == 2) {
-                    // TODO: 2023/4/22 GUI Enter the updated password:
-                    String password = null;
+                    String password = accPassInputDialog();
                     oos.writeObject(password);
                 } else if (choice == 3) {
-                    // TODO: 2023/4/22 GUI Enter the new nickname:
-                    String nickname = null;
+                    String nickname = accNameInputDialog();
                     oos.writeObject(nickname);
                 }
                 boolean editAccount = ois.readBoolean();
                 if (editAccount) {
-                    // TODO: 2023/4/22 Your account has been updated!
+                    accUpMessageDialog();
                 } else {
-                    // TODO: 2023/4/22 There was a problem with updating your account.
+                    accUpErrMessageDialog();
                 }
             } else {
                 break;
@@ -306,31 +300,24 @@ public class Client {
     }
 
     private static void selectProduct() throws IOException {
-        // TODO: 2023/4/22 GUI Please enter the name of the product:
-        String productName = getProductName();
+        String productName = productInputDialog();
         oos.writeObject(productName);
         boolean exists = ois.readBoolean();
         if (!exists) {
-            // TODO: 2023/4/22 GUI The product does not exist!
-            // Returning to the marketplace...
-
+            productErrMessageDialog();
         } else {
-            // TODO: 2023/4/22 GUI 1. Purchase
-            //2. Return to market
-            // TODO: GUI getChoice
-            int choice = getChoice();
+            int choice = purchaseInputDialog();
             oos.writeObject(choice + "");
             if (choice == 1) {
                 boolean purchased = ois.readBoolean();
                 if (purchased) {
-                    // TODO: 2023/4/22 GUI The product has been successfully purchased!\nReturning to the marketplace...
+                    purchaseMessageDialog();
                 } else {
-                    // TODO: 2023/4/22 GUI The product could not be purchased!\nReturning to the marketplace...
+                    purchaseErrMessageDialog();
                 }
-            } else {
-                // TODO: 2023/4/22 GUI  Returning to the marketplace...
             }
         }
+        returnMarketMessageDialog();
     }
 
     private static String getProductName() {
@@ -655,7 +642,31 @@ public class Client {
                 "Account", JOptionPane.WARNING_MESSAGE);
     }
     
-    
+    public static void productErrMessageDialog() {
+        JOptionPane.showMessageDialog(null, "The product you searched for does not exist",
+                "Product", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public static int purchaseInputDialog() {
+        int choice = 1 + JOptionPane.showConfirmDialog(null, "Would you like to buy this product?",
+                "Product", JOptionPane.YES_NO_OPTION);
+        return choice;
+    }
+
+    public static void purchaseMessageDialog() {
+        JOptionPane.showMessageDialog(null, "Product has been purchased!",
+                "Product", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static void purchaseErrMessageDialog() {
+        JOptionPane.showMessageDialog(null, "There was an error purchasing the product.",
+                "Product", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public static void returnMarketMessageDialog() {
+        JOptionPane.showMessageDialog(null, "Returning to the marketplace...",
+                "Marketplace", JOptionPane.INFORMATION_MESSAGE);
+    }
     
     
 }
