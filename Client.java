@@ -169,8 +169,7 @@ public class Client {
                     oos.writeObject(pName);
                     // TODO: 2023/4/23 GUI The product has been deleted.
                 } else if (choice == 4) {
-                    // TODO: 2023/4/23 GUI Enter the name of the store:
-                    String selectedStore;
+                    String selectedStore = storeInputDialog();
                     oos.writeObject(selectedStore);
                 } else {
                     break;
@@ -178,14 +177,15 @@ public class Client {
             }
         } else if (choice == 3) {
             while (true) {
-                String sortBy = (String) ois.readObject();
-                sellerDisplayDashboard(sortBy);
-                // TODO: 2023/4/23 GUI 1. Sort by Ascending Sales\n2. Sort by Descending Sales\n3. Return to Seller Menu
-                choice = getChoice();
+                //asks how to sort
+                choice = sellerDashboardInputDialog();
                 oos.writeObject(choice + "");
                 if (choice == 3) {
                     break;
                 }
+                //sorts
+                String sortBy = (String) ois.readObject();
+                sellerDisplayDashboard(sortBy);
             }
         } else if (choice == 4) {
             while (true) {
@@ -514,7 +514,7 @@ public class Client {
         return x;
     }
     
-    public static int dashboardInputDialog() {
+    public static int sellerDashboardInputDialog() {
         String[] dashboard = {"1. Sort by ascending sales", "2. Sort by descending sales",
                 "3. Return to dashboard menu"};
         String choice = (String) JOptionPane.showInputDialog(null, "How do you want to sort sales?",
