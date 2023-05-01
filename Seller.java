@@ -45,13 +45,19 @@ public class Seller extends UserBase {
                 }
             }
             for (Store x: stores) {
-                System.out.printf("Store: %s\nCustomers:\n", x.getName());
+                ArrayList<String> customerlist = x.getCustomers();
+                String s = "";
+                for (String nickname: customerlist) {
+                    s += nickname;
+                }
+                System.out.printf("Store: %s\nCustomers: %s\n", x.getName(), s);
 
                 ArrayList<Product> storeProducts = x.getProducts();
-                System.out.printf("Products from %s:\n", x.getName());
+                System.out.printf("Products from %s listed below...\n", x.getName());
                 for (Product p: storeProducts) {
                     System.out.printf("%s - %d sold\n", p.getName(), p.getQuantitySold());
                 }
+                System.out.println("--------------------");
 
             }
             System.out.println("====================");
