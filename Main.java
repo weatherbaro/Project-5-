@@ -1,15 +1,9 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Iterator;
+
 /**
  * Project 4 Marketplace
  *
@@ -17,7 +11,7 @@ import java.util.ArrayList;
  * @author Willie Chen, Yixun Lu
  */
 public class Main implements Runnable{
-    
+
     Socket socket;
 
     public Main(Socket socket) {
@@ -98,7 +92,7 @@ public class Main implements Runnable{
         }
     }
 
-    private static void updateCustomerHistory(String email, ArrayList<Product> history) {
+    private static void updateCustomerHistory(String email, ArrayList<Product> history) throws IOException {
         if (!history.isEmpty()) {
             try {
                 File originalAccount = new File("Accounts.txt"); // original account file
@@ -135,56 +129,56 @@ public class Main implements Runnable{
         }
     }
 
-    private static void updateSellerStores(ArrayList<Store> allStores, ArrayList<Store> ownedstores) {
+    private static void updateSellerStores(ArrayList<Store> allStores, ArrayList<Store> ownedstores) throws IOException {
         try {
             FileWriter fw = new FileWriter("Stores.txt", false);
             PrintWriter pw = new PrintWriter(fw, false);
             pw.flush();
             for (Store s: allStores) {
-                    String storeName = s.getName();
-                    String productNames = "";
-                    ArrayList<Product> storeProducts = s.getProducts();
-                    for (int i = 0; i < storeProducts.size(); i++) {
-                        productNames += storeProducts.get(i).getName();
-                        if (i < storeProducts.size() - 1) {
-                            productNames += ", ";
+                String storeName = s.getName();
+                String productNames = "";
+                ArrayList<Product> storeProducts = s.getProducts();
+                for (int i = 0; i < storeProducts.size(); i++) {
+                    productNames += storeProducts.get(i).getName();
+                    if (i < storeProducts.size() - 1) {
+                        productNames += ", ";
+                    }
+                }
+                int sales = s.getsales();
+                String customernames = "none";
+                if (s.getCustomers().size() > 0) {
+                    ArrayList<String> c = s.getCustomers();
+                    for (int i = 0; i < c.size() - 1; i++) {
+                        customernames += c.get(i);
+                        if (i < c.size() - 1) {
+                            customernames += ", ";
                         }
                     }
-                    int sales = s.getsales();
-                    String customernames = "none";
-                    if (s.getCustomers().size() > 0) {
-                        ArrayList<String> c = s.getCustomers();
-                        for (int i = 0; i < c.size() - 1; i++) {
-                            customernames += c.get(i);
-                            if (i < c.size() - 1) {
-                                customernames += ", ";
+                }
+                for (Store owned: ownedstores) {
+                    if (owned.getName().equalsIgnoreCase(s.getName())) {
+                        sales = owned.getsales();
+                        productNames = "";
+                        storeProducts = owned.getProducts();
+                        for (int i = 0; i < storeProducts.size(); i++) {
+                            productNames += storeProducts.get(i).getName();
+                            if (i < storeProducts.size() - 1) {
+                                productNames += ", ";
                             }
                         }
-                    }
-                    for (Store owned: ownedstores) {
-                        if (owned.getName().equalsIgnoreCase(s.getName())) {
-                            sales = owned.getsales();
-                            productNames = "";
-                            storeProducts = owned.getProducts();
-                            for (int i = 0; i < storeProducts.size(); i++) {
-                                productNames += storeProducts.get(i).getName();
-                                if (i < storeProducts.size() - 1) {
-                                    productNames += ", ";
+                        customernames = "none";
+                        if (s.getCustomers().size() > 0) {
+                            ArrayList<String> c = s.getCustomers();
+                            for (int i = 0; i < c.size() - 1; i++) {
+                                customernames += c.get(i);
+                                if (i < c.size() - 1) {
+                                    customernames += ", ";
                                 }
                             }
-                            customernames = "none";
-                            if (s.getCustomers().size() > 0) {
-                                ArrayList<String> c = s.getCustomers();
-                                for (int i = 0; i < c.size() - 1; i++) {
-                                    customernames += c.get(i);
-                                    if (i < c.size() - 1) {
-                                        customernames += ", ";
-                                    }
-                                }
-                            }
                         }
                     }
-                    pw.write(String.format("%s; %s; %d; %s\n", storeName, productNames, sales, customernames));
+                }
+                pw.write(String.format("%s; %s; %d; %s\n", storeName, productNames, sales, customernames));
             }
             for (Store s: ownedstores) {
                 boolean isNew = true;
@@ -225,7 +219,7 @@ public class Main implements Runnable{
         }
     }
 
-    private static void updateSellerProducts(ArrayList<Product> allproducts, ArrayList<Product> ownedproducts, ArrayList<Product> deletedProducts) {
+    private static void updateSellerProducts(ArrayList<Product> allproducts, ArrayList<Product> ownedproducts, ArrayList<Product> deletedProducts) throws IOException {
         String productName;
         String StoreName;
         boolean onSale;
@@ -294,7 +288,7 @@ public class Main implements Runnable{
         }
     }
 
-    private static void updateSellerAccount(String email, ArrayList<Store> stores) {
+    private static void updateSellerAccount(String email, ArrayList<Store> stores) throws IOException {
         if (!stores.isEmpty()) {
             try {
                 File originalAccount = new File("Accounts.txt"); // original account file
@@ -655,7 +649,7 @@ public class Main implements Runnable{
         return false;
     }
 
-    ObjectOutputStream oos;
+    static ObjectOutputStream oos;
     ObjectInputStream ois;
 
     @Override
@@ -804,13 +798,10 @@ public class Main implements Runnable{
                                         choice = (String)ois.readObject();
                                         if (choice.equals("1")) {
                                             boolean purchased = Customer.purchase(productDirectory, storeDirectory,
-                                                productname, purchaseHistory, customer.getNickname());
+                                                    productname, purchaseHistory, customer.getNickname());
                                             oos.writeBoolean(purchased);
                                             if (purchased) {
                                                 System.out.println("The product has been successfully purchased!\nReturning to the marketplace...");
-                                                updateCustomerHistory(email, purchaseHistory);
-                                                updateCustomerProducts(productDirectory);
-                                                updateCustomerStores(storeDirectory);
                                             } else {
                                                 System.out.println("The product could not be purchased!\n Returning to the marketplace...");
                                             }
@@ -880,7 +871,7 @@ public class Main implements Runnable{
                                         ArrayList<String> historys = new ArrayList<>();
                                         for (Product p : purchaseHistory) {
                                             System.out.printf("Name: %s\nDescription: %s\nPurchased from %s at $%.2f\n",
-                                                p.getName(), p.getDescription(), p.getStoreName(), p.getPrice());
+                                                    p.getName(), p.getDescription(), p.getStoreName(), p.getPrice());
                                             historys.add(String.format("Name: %s\nDescription: %s\nPurchased from %s at $%.2f\n",
                                                     p.getName(), p.getDescription(), p.getStoreName(), p.getPrice()));
                                         }
@@ -926,18 +917,12 @@ public class Main implements Runnable{
                                     Store store = new Store(storeName, 0, new ArrayList<>(), new ArrayList<>());
                                     seller.addStore(store);
                                     System.out.println("Your new store has been created!");
-                                    updateSellerAccount(email, ownedStores);
-                                    updateSellerStores(storeDirectory, ownedStores);
-                                    updateSellerProducts(productDirectory, ownedProducts, deletedProducts);
                                 }
                                 case "2" -> {
                                     System.out.println("Enter the name of the store:");
                                     String selectedStore = (String)ois.readObject();
                                     boolean productMenu = true;
                                     while (productMenu) {
-                                        updateSellerAccount(email, ownedStores);
-                                        updateSellerStores(storeDirectory, ownedStores);
-                                        updateSellerProducts(productDirectory, ownedProducts, deletedProducts);
                                         System.out.println("""
                                             1. Create a product
                                             2. Edit a product
@@ -1011,86 +996,81 @@ public class Main implements Runnable{
                                                 System.out.println("Enter the name of the product to be deleted:");
                                                 String pName = (String)ois.readObject();
                                                 for (Store s : ownedStores) {
-                                                Iterator<Product> products = s.getProducts().iterator();
-                                                while(products.hasNext()) {
-                                                    Product p = products.next();
-                                                    if (pName.equalsIgnoreCase(p.getName())) {
-                                                        deletedProducts.add(p);
-                                                        products.remove();
+                                                    Iterator<Product> products = s.getProducts().iterator();
+                                                    while(products.hasNext()) {
+                                                        Product p = products.next();
+                                                        if (pName.equalsIgnoreCase(p.getName())) {
+                                                            deletedProducts.add(p);
+                                                            products.remove();
+                                                        }
                                                     }
                                                 }
-                                            }
                                                 System.out.println("The product has been deleted.");
                                             }
                                             case "4" -> {
-                                            System.out.println("Enter the path of the file to be imported:");
-                                            try {
-                                                File importFile = new File((String)ois.readObject());
-                                                BufferedReader br = new BufferedReader(new FileReader(importFile));
-                                                String line;
-                                                String[] productInfo;
-                                                String productName;
-                                                String productDescription;
-                                                boolean onSale;
-                                                double productPrice;
-                                                int productQuantity;
-                                                while ((line = br.readLine()) != null) {
-                                                    productInfo = line.split("; ");
-                                                    productName = productInfo[0];
-                                                    onSale = Boolean.parseBoolean(productInfo[1]);
-                                                    productDescription = productInfo[2];
-                                                    productQuantity = Integer.parseInt(productInfo[3]);
-                                                    productPrice = Double.parseDouble(productInfo[4]);
-                                                    for (Store s : seller.getStores()) {
-                                                        if (selectedStore.equals(s.getName())) {
-                                                            s.addProduct(new Product(productName, selectedStore, onSale,
-                                                                    productDescription, productQuantity, productPrice, 0));
-                                                        }
-                                                    }
-                                                }
-                                                br.close();
-                                                importFile.delete();
-                                                System.out.println("The product(s) in the file have been imported!");
-                                                updateSellerAccount(email, ownedStores);
-                                                updateSellerStores(storeDirectory, ownedStores);
-                                                updateSellerProducts(productDirectory, ownedProducts, deletedProducts);
-                                            } catch (Exception e) {
-                                                System.out.println("Error importing new products!");
-                                            }
-                                        }
-                                        case "5" -> {
-                                            System.out.println("Enter the names of the products to be exported separated by spaced commas:");
-                                            String[] exports = (String)ois.readObject().split(", ");
-                                            System.out.println("Enter the name of the exported file");
-                                            String exportedName = (String)ois.readObject()
-                                            try {
-                                                File exportFile = new File(exportedName);
-                                                BufferedWriter bw = new BufferedWriter(new FileWriter(exportFile));
-                                                for (String productName: exports) {
-                                                    for (Store s : ownedStores) {
-                                                        Iterator<Product> products = s.getProducts().iterator();
-                                                        while(products.hasNext()) {
-                                                            Product p = products.next();
-                                                            if (productName.equalsIgnoreCase(p.getName())) {
-                                                                Product product = p;
-                                                                products.remove();
-                                                                deletedProducts.add(p);
-                                                                bw.write(String.format("%s; %b; %s; %d; %.2f\n",
-                                                                        productName, product.isOnSale(),
-                                                                        product.getDescription(), product.getQuantity(), product.getPrice()));
+                                                System.out.println("Enter the path of the file to be imported:");
+                                                try {
+                                                    File importFile = new File((String)ois.readObject());
+                                                    BufferedReader br = new BufferedReader(new FileReader(importFile));
+                                                    String line;
+                                                    String[] productInfo;
+                                                    String productName;
+                                                    String productDescription;
+                                                    boolean onSale;
+                                                    double productPrice;
+                                                    int productQuantity;
+                                                    while ((line = br.readLine()) != null) {
+                                                        productInfo = line.split("; ");
+                                                        productName = productInfo[0];
+                                                        onSale = Boolean.parseBoolean(productInfo[1]);
+                                                        productDescription = productInfo[2];
+                                                        productQuantity = Integer.parseInt(productInfo[3]);
+                                                        productPrice = Double.parseDouble(productInfo[4]);
+                                                        for (Store s : seller.getStores()) {
+                                                            if (selectedStore.equals(s.getName())) {
+                                                                s.addProduct(new Product(productName, selectedStore, onSale,
+                                                                        productDescription, productQuantity, productPrice, 0));
                                                             }
                                                         }
                                                     }
+                                                    br.close();
+                                                    importFile.delete();
+                                                    System.out.println("The product(s) in the file have been imported!");
+                                                } catch (Exception e) {
+                                                    System.out.println("Error importing new products!");
                                                 }
-                                                bw.close();
-                                                System.out.println("Products have been successfully exported!");
-                                                updateSellerAccount(email, ownedStores);
-                                                updateSellerStores(storeDirectory, ownedStores);
-                                                updateSellerProducts(productDirectory, ownedProducts, deletedProducts);
-                                            } catch (Exception e) {
-                                                System.out.println("Error exporting products!");
                                             }
-                                        } 
+                                            case "5" -> {
+                                                System.out.println("Enter the names of the products to be exported separated by spaced commas:");
+                                                String export = (String)ois.readObject();
+                                                String[] exports = export.split(", ");
+                                                System.out.println("Enter the name of the exported file");
+                                                String exportedName = (String)ois.readObject();
+                                                try {
+                                                    File exportFile = new File(exportedName);
+                                                    BufferedWriter bw = new BufferedWriter(new FileWriter(exportFile));
+                                                    for (String productName: exports) {
+                                                        for (Store s : ownedStores) {
+                                                            Iterator<Product> products = s.getProducts().iterator();
+                                                            while(products.hasNext()) {
+                                                                Product p = products.next();
+                                                                if (productName.equalsIgnoreCase(p.getName())) {
+                                                                    Product product = p;
+                                                                    products.remove();
+                                                                    deletedProducts.add(p);
+                                                                    bw.write(String.format("%s; %b; %s; %d; %.2f\n",
+                                                                            productName, product.isOnSale(),
+                                                                            product.getDescription(), product.getQuantity(), product.getPrice()));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    bw.close();
+                                                    System.out.println("Products have been successfully exported!");
+                                                } catch (Exception e) {
+                                                    System.out.println("Error exporting products!");
+                                                }
+                                            }
                                             case "6" -> {
                                                 System.out.println("Enter the name of the store:");
                                                 selectedStore = (String)ois.readObject();
