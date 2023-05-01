@@ -262,11 +262,17 @@ public class Client {
     }
 
     private static void viewPurchaseHistory() throws IOException, ClassNotFoundException {
-        // TODO: 2023/4/22 GUI Showing your purchase history...\n====================
         while (true) {
             ArrayList<String> historys = (ArrayList<String>) ois.readObject();
-            // TODO: 2023/4/22 GUI ====================\n1. Export Purchase history\n2. Return to marketplace
-            int choice = getChoice();
+            JPanel panel = new JPanel(new BorderLayout());
+            JList<String> list = new JList<>(historys.toArray(new String[0]));
+            JScrollPane scrollPane = new JScrollPane(list);
+            JLabel question = new JLabel("Would you like to export your purchase history?");
+            panel.add(scrollPane, BorderLayout.CENTER);
+            panel.add(question, BorderLayout.SOUTH);
+            int choice = 1 + JOptionPane.showConfirmDialog(null, panel,
+                    "Purchase History", JOptionPane.YES_NO_OPTION);
+            
             oos.writeObject(choice + "");
             if (choice == 1) {
                 boolean exported = ois.readBoolean();
