@@ -10,10 +10,9 @@ public class Customer extends UserBase {
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
 
-    public Customer(String email, String password, String nickname, double balance, ArrayList<Product> purchaseHistory,
+    public Customer(String email, String password, String nickname, ArrayList<Product> purchaseHistory,
         ObjectInputStream ois, ObjectOutputStream oos) {
         super(email, nickname, password);
-        this.balance = balance;
         this.purchaseHistory = purchaseHistory;
         this.ois = ois;
         this.oos = oos;
