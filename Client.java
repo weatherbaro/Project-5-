@@ -11,7 +11,16 @@ public class Client {
     static ObjectInputStream ois;
     static ObjectOutputStream oos;
     
-    //product creation
+    //account login and product creation gui
+    JTextField xemail = new JTextField(5);
+    JTextField xpassword = new JTextField(5);
+    JPanel login = new JPanel();
+    login.setLayout(new GridLayout(2,1));
+    login.add(new JLabel("Email:"));
+    login.add(xemail);
+    login.add(new JLabel("Password:"));
+    login.add(xpassword);
+    
     JTextField xname = new JTextField(5);
     JTextField xdescription = new JTextField(5);
     JTextField xquantity = new JTextField(5);
@@ -77,9 +86,14 @@ public class Client {
 
     private static void  login() throws IOException, ClassNotFoundException {
         oos.writeObject("1");
-        String email = emailLoginInputDialog();
+        int res = JOptionPane.showConfirmDialog(null, login,
+                "Account Login", JOptionPane.OK_CANCEL_OPTION);
+        if (res == JOptionPane.OK_OPTION) {
+            String email = xemail.getText();
+            String password = xpassword.getText();
+        }
+        
         oos.writeObject(email);
-        String password = passwordLoginInputDialog();
         oos.writeObject(password);
         String loginResult = (String) ois.readObject();
         if ("success".equalsIgnoreCase(loginResult)) {
