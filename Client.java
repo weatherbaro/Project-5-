@@ -420,20 +420,6 @@ public class Client {
         return choice;
     }
 
-    public static String emailLoginInputDialog() {
-        String choice;
-        choice = JOptionPane.showInputDialog(null, "Please enter your email",
-                "Marketplace Login", JOptionPane.QUESTION_MESSAGE);
-        return choice;
-    }
-
-    public static String passwordLoginInputDialog() {
-        String choice;
-        choice = JOptionPane.showInputDialog(null, "Please enter your password",
-                "Marketplace Login", JOptionPane.QUESTION_MESSAGE);
-        return choice;
-    }
-
     public static String emailCreateInputDialog() {
         String choice;
         choice = JOptionPane.showInputDialog(null, "Please enter an email",
