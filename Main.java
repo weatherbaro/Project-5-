@@ -933,8 +933,10 @@ public class Main implements Runnable{
                                             1. Create a product
                                             2. Edit a product
                                             3. Delete a product
-                                            4. Choose a different store
-                                            5. Return to Seller Menu""");
+                                            4. Import Products
+                                            5. Export Products
+                                            6. Choose a different store
+                                            7. Return to Seller Menu""");
                                         choice = (String)ois.readObject();
                                         switch (choice) {
                                             case "1" -> {
@@ -999,21 +1001,82 @@ public class Main implements Runnable{
                                             case "3" -> {
                                                 System.out.println("Enter the name of the product to be deleted:");
                                                 String pName = (String)ois.readObject();
-                                                boolean deleted = false;
                                                 for (Store s : ownedStores) {
-                                                if (!deleted) {
-                                                    for (Product p : s.getProducts()) {
-                                                        if (pName.equalsIgnoreCase(p.getName())) {
-                                                            deletedProducts.add(p);
-                                                            s.removeProduct(p);
-                                                            deleted = true;
-                                                        }
+                                                Iterator<Product> products = s.getProducts().iterator();
+                                                while(products.hasNext()) {
+                                                    Product p = products.next();
+                                                    if (pName.equalsIgnoreCase(p.getName())) {
+                                                        deletedProducts.add(p);
+                                                        products.remove();
                                                     }
                                                 }
                                             }
                                                 System.out.println("The product has been deleted.");
                                             }
                                             case "4" -> {
+                                            System.out.println("Enter the path of the file to be imported:");
+                                            try {
+                                                File importFile = new File((String)ois.readObject());
+                                                BufferedReader br = new BufferedReader(new FileReader(importFile));
+                                                String line;
+                                                String[] productInfo;
+                                                String productName;
+                                                String productDescription;
+                                                boolean onSale;
+                                                double productPrice;
+                                                int productQuantity;
+                                                while ((line = br.readLine()) != null) {
+                                                    productInfo = line.split("; ");
+                                                    productName = productInfo[0];
+                                                    onSale = Boolean.parseBoolean(productInfo[1]);
+                                                    productDescription = productInfo[2];
+                                                    productQuantity = Integer.parseInt(productInfo[3]);
+                                                    productPrice = Double.parseDouble(productInfo[4]);
+                                                    for (Store s : seller.getStores()) {
+                                                        if (selectedStore.equals(s.getName())) {
+                                                            s.addProduct(new Product(productName, selectedStore, onSale,
+                                                                    productDescription, productQuantity, productPrice, 0));
+                                                        }
+                                                    }
+                                                }
+                                                br.close();
+                                                importFile.delete();
+                                                System.out.println("The product(s) in the file have been imported!");
+                                            } catch (Exception e) {
+                                                System.out.println("Error importing new products!");
+                                            }
+                                        }
+                                        case "5" -> {
+                                            System.out.println("Enter the names of the products to be exported separated by spaced commas:");
+                                            String[] exports = (String)ois.readObject().split(", ");
+                                            System.out.println("Enter the name of the exported file");
+                                            String exportedName = (String)ois.readObject()
+                                            try {
+                                                File exportFile = new File(exportedName);
+                                                BufferedWriter bw = new BufferedWriter(new FileWriter(exportFile));
+                                                for (String productName: exports) {
+                                                    for (Store s : ownedStores) {
+                                                        Iterator<Product> products = s.getProducts().iterator();
+                                                        while(products.hasNext()) {
+                                                            Product p = products.next();
+                                                            if (productName.equalsIgnoreCase(p.getName())) {
+                                                                Product product = p;
+                                                                products.remove();
+                                                                deletedProducts.add(p);
+                                                                bw.write(String.format("%s; %b; %s; %d; %.2f\n",
+                                                                        productName, product.isOnSale(),
+                                                                        product.getDescription(), product.getQuantity(), product.getPrice()));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                bw.close();
+                                                System.out.println("Products have been successfully exported!");
+                                            } catch (Exception e) {
+                                                System.out.println("Error exporting products!");
+                                            }
+                                        } 
+                                            case "6" -> {
                                                 System.out.println("Enter the name of the store:");
                                                 selectedStore = (String)ois.readObject();
                                             }
