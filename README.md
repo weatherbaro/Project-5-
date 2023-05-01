@@ -34,7 +34,8 @@ Data for the economy is split into three files whose values are separated by sem
     - Sends data from the user to the server to be processed.
     - Using the Client, users can choose to cfreate an account or log into an existing one.
     - After logging in, the class will provide the user with different options based on their role (Seller/Customer).
-
+  # Testing.md
+    - contains the test cases that were performed
   # Main.java
     - Receives data from the client class and processes it, communicates with the client class to show user the information they request.
     - This class calls on methods from other classes. It is also responsible for saving any user details, products, stores, etc 
