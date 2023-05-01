@@ -12,8 +12,8 @@ public class Client {
     static ObjectOutputStream oos;
     
     //account login and product creation gui
-    JTextField xemail = new JTextField(5);
-    JTextField xpassword = new JTextField(5);
+    JTextField xemail = new JTextField(15);
+    JTextField xpassword = new JTextField(15);
     JPanel login = new JPanel();
     login.setLayout(new GridLayout(2,1));
     login.add(new JLabel("Email:"));
@@ -21,10 +21,10 @@ public class Client {
     login.add(new JLabel("Password:"));
     login.add(xpassword);
     
-    JTextField xname = new JTextField(5);
-    JTextField xdescription = new JTextField(5);
-    JTextField xquantity = new JTextField(5);
-    JTextField xprice = new JTextField(5);
+    JTextField xname = new JTextField(12);
+    JTextField xdescription = new JTextField(12);
+    JTextField xquantity = new JTextField(12);
+    JTextField xprice = new JTextField(12);
     JPanel xproduct = new JPanel();
     xproduct.setLayout(new GridLayout(4,1));
     xproduct.add(new JLabel("Name:"));
