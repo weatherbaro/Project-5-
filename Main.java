@@ -808,6 +808,9 @@ public class Main implements Runnable{
                                             oos.writeBoolean(purchased);
                                             if (purchased) {
                                                 System.out.println("The product has been successfully purchased!\nReturning to the marketplace...");
+                                                updateCustomerHistory(email, purchaseHistory);
+                                                updateCustomerProducts(productDirectory);
+                                                updateCustomerStores(storeDirectory);
                                             } else {
                                                 System.out.println("The product could not be purchased!\n Returning to the marketplace...");
                                             }
@@ -923,12 +926,18 @@ public class Main implements Runnable{
                                     Store store = new Store(storeName, 0, new ArrayList<>(), new ArrayList<>());
                                     seller.addStore(store);
                                     System.out.println("Your new store has been created!");
+                                    updateSellerAccount(email, ownedStores);
+                                    updateSellerStores(storeDirectory, ownedStores);
+                                    updateSellerProducts(productDirectory, ownedProducts, deletedProducts);
                                 }
                                 case "2" -> {
                                     System.out.println("Enter the name of the store:");
                                     String selectedStore = (String)ois.readObject();
                                     boolean productMenu = true;
                                     while (productMenu) {
+                                        updateSellerAccount(email, ownedStores);
+                                        updateSellerStores(storeDirectory, ownedStores);
+                                        updateSellerProducts(productDirectory, ownedProducts, deletedProducts);
                                         System.out.println("""
                                             1. Create a product
                                             2. Edit a product
@@ -1042,6 +1051,9 @@ public class Main implements Runnable{
                                                 br.close();
                                                 importFile.delete();
                                                 System.out.println("The product(s) in the file have been imported!");
+                                                updateSellerAccount(email, ownedStores);
+                                                updateSellerStores(storeDirectory, ownedStores);
+                                                updateSellerProducts(productDirectory, ownedProducts, deletedProducts);
                                             } catch (Exception e) {
                                                 System.out.println("Error importing new products!");
                                             }
@@ -1072,6 +1084,9 @@ public class Main implements Runnable{
                                                 }
                                                 bw.close();
                                                 System.out.println("Products have been successfully exported!");
+                                                updateSellerAccount(email, ownedStores);
+                                                updateSellerStores(storeDirectory, ownedStores);
+                                                updateSellerProducts(productDirectory, ownedProducts, deletedProducts);
                                             } catch (Exception e) {
                                                 System.out.println("Error exporting products!");
                                             }
