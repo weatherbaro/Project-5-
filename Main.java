@@ -386,7 +386,7 @@ public class Main implements Runnable{
             BufferedWriter bfw = new BufferedWriter(new FileWriter("Accounts.txt", true));
             bfw.write(String.format("%s; %s; %s; %s", email, password, nickname, type));
             if (type.equals("customer")) {
-                bfw.write(String.format("; %.2f; %s\n", 0.0, "none"));
+                bfw.write(String.format("; %s\n", "none"));
             } else if (type.equals("seller")) {
                 bfw.write(String.format("; %s\n", "none"));
             }
@@ -710,8 +710,7 @@ public class Main implements Runnable{
                                 purchaseHistory = importPurchaseHistory(accountData.get(5));
                                 first = !first;
                             }
-                            Customer customer = new Customer(email, password, accountData.get(2),
-                                Double.parseDouble(accountData.get(4)), purchaseHistory, ois, oos);
+                            Customer customer = new Customer(email, password, accountData.get(2), purchaseHistory, ois, oos);
                             customer.displayMarket(productDirectory, scenario, sortBy, sale, searching, search);
                             System.out.println("""
                                 1. Sort products
