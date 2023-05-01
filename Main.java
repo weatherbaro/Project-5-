@@ -225,7 +225,7 @@ public class Main implements Runnable{
         }
     }
 
-    private static void updateSellerProducts(ArrayList<Product> allproducts, ArrayList<Product> ownedproducts) {
+    private static void updateSellerProducts(ArrayList<Product> allproducts, ArrayList<Product> ownedproducts, ArrayList<Product> deletedProducts) {
         String productName;
         String StoreName;
         boolean onSale;
@@ -240,6 +240,8 @@ public class Main implements Runnable{
 
             // first updates current products owned by the seller
             for (Product p: allproducts) {
+                // deletes old products
+                boolean wasDeleted = false;
                 productName = p.getName();
                 StoreName = p.getStoreName();
                 onSale = p.isOnSale();
@@ -254,8 +256,15 @@ public class Main implements Runnable{
                         sold = owned.getQuantitySold();
                     }
                 }
-                pw.write(String.format("%s; %s; %s; %s; %d; %.2f; %d\n",
-                        productName, StoreName, onSale, description, quantity, price, sold));
+                for (Product deleted: deletedProducts) {
+                    if (deleted.getName().equalsIgnoreCase(p.getName())) {
+                        wasDeleted = true;
+                    }
+                }
+                if (!wasDeleted) {
+                    pw.write(String.format("%s; %s; %s; %s; %d; %.2f; %d\n",
+                            productName, StoreName, onSale, description, quantity, price, sold));
+                }
             }
             // then updates new products into data file
             for (Product owned: ownedproducts) {
@@ -493,8 +502,15 @@ public class Main implements Runnable{
             for (Product p: purchaseHistory) {
                 String name = p.getName();
                 String storeName = p.getStoreName();
+                String description = p.getDescription();
+                boolean sale = p.isOnSale();
                 double price = p.getPrice();
-                w.write(String.format("%s, %s, $%.2f\n", name, storeName, price));
+                w.write(String.format("%s, %s, %s, $%.2f, ", name, storeName, description, price));
+                if (sale) {
+                    w.write("Bought on sale.\n");
+                } else {
+                    w.write("\n");
+                }
             }
             w.close();
             return true;
@@ -667,6 +683,7 @@ public class Main implements Runnable{
             ArrayList<String> accountData = null; // contains all of account information
             ArrayList<Store> storeDirectory = getStores(); // gets all stores into one arraylist for menu to interact with
             ArrayList<Product> productDirectory = getProducts(); // gets all products into one arraylist
+            ArrayList<Product> deletedProducts = new ArrayList<Product>();
             ArrayList<Store> ownedStores = null;
             ArrayList<Product> ownedProducts = null;
             ArrayList<Product> purchaseHistory = null;
@@ -983,13 +1000,18 @@ public class Main implements Runnable{
                                             case "3" -> {
                                                 System.out.println("Enter the name of the product to be deleted:");
                                                 String pName = (String)ois.readObject();
+                                                boolean deleted = false;
                                                 for (Store s : ownedStores) {
+                                                if (!deleted) {
                                                     for (Product p : s.getProducts()) {
                                                         if (pName.equalsIgnoreCase(p.getName())) {
+                                                            deletedProducts.add(p);
                                                             s.removeProduct(p);
+                                                            deleted = true;
                                                         }
                                                     }
                                                 }
+                                            }
                                                 System.out.println("The product has been deleted.");
                                             }
                                             case "4" -> {
@@ -1088,7 +1110,7 @@ public class Main implements Runnable{
                         if (accountData.get(3).equals("seller")) {
                             updateSellerAccount(email, ownedStores);
                             updateSellerStores(storeDirectory, ownedStores);
-                            updateSellerProducts(productDirectory, ownedProducts);
+                            updateSellerProducts(productDirectory, ownedProducts, deletedProducts);
                         } else if (accountData.get(3).equals("customer")) {
                             updateCustomerHistory(email, purchaseHistory);
                             updateCustomerProducts(productDirectory);
