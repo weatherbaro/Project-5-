@@ -66,12 +66,32 @@ public class Client {
     private static void createAccount() throws IOException, ClassNotFoundException {
         // 通知服务端选择创建账号
         oos.writeObject("2");
-        String email = emailCreateInputDialog();
+        JTextField xemail = new JTextField(15);
+        JTextField xpass = new JTextField(15);
+        JTextField xnickname = new JTextField(15);
+        JPanel create = new JPanel();
+        
+        create.setLayout(new GridLayout(3,1));
+        create.add(new JLabel("Enter an email:"));
+        create.add(xemail);
+        create.add(new JLabel("Create password:"));
+        create.add(xpass, BorderLayout.CENTER);
+        create.add(new JLabel("Create username:"));
+        create.add(xnickname);
+
+        int res2 = JOptionPane.showConfirmDialog(null, create,
+                "Account Creation", JOptionPane.OK_CANCEL_OPTION);
+
+        if (res2 == JOptionPane.OK_OPTION) {
+                String email = xemail.getText();
+                String password = xpass.getText();
+                String nickname = xnickname.getText();
+
+        }
         oos.writeObject(email);
-        String password = passCreateInputDialog();
         oos.writeObject(password);
-        String nickname = nameCreateInputDialog());
         oos.writeObject(nickname);
+        
         int role = roleCreateInputDialog();
         oos.writeObject(roles[role]);
         
