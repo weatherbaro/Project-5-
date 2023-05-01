@@ -1,5 +1,6 @@
 # Project-4
 Run with the following files:
+  - Client.java
   - Main.java
   - User.java
   - UserBase.java
