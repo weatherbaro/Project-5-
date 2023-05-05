@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -12,32 +13,36 @@ public class Client {
     static ObjectOutputStream oos;
     
     //account login and product creation gui
-    JTextField xemail = new JTextField(15);
-    JTextField xpassword = new JTextField(15);
-    JPanel login = new JPanel();
-    login.setLayout(new GridLayout(2,1));
-    login.add(new JLabel("Email:"));
-    login.add(xemail);
-    login.add(new JLabel("Password:"));
-    login.add(xpassword);
-    
-    JTextField xname = new JTextField(12);
-    JTextField xdescription = new JTextField(12);
-    JTextField xquantity = new JTextField(12);
-    JTextField xprice = new JTextField(12);
-    JPanel xproduct = new JPanel();
-    xproduct.setLayout(new GridLayout(4,1));
-    xproduct.add(new JLabel("Name:"));
-    xproduct.add(xname);
-    xproduct.add(new JLabel("Description:"));
-    xproduct.add(xdescription);
-    xproduct.add(new JLabel("Quantity:"));
-    xproduct.add(xquantity);
-    xproduct.add(new JLabel("Price:"));
-    xproduct.add(xprice);
+    static JTextField xemail = new JTextField(15);
+    static JTextField xpassword = new JTextField(15);
+    static JPanel login = new JPanel();
+
+    static JTextField xname = new JTextField(12);
+    static JTextField xdescription = new JTextField(12);
+    static JTextField xquantity = new JTextField(12);
+    static JTextField xprice = new JTextField(12);
+    static JPanel xproduct = new JPanel();
+
 
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
+
+        login.setLayout(new GridLayout(2,1));
+        login.add(new JLabel("Email:"));
+        login.add(xemail);
+        login.add(new JLabel("Password:"));
+        login.add(xpassword);
+
+        xproduct.setLayout(new GridLayout(4,1));
+        xproduct.add(new JLabel("Name:"));
+        xproduct.add(xname);
+        xproduct.add(new JLabel("Description:"));
+        xproduct.add(xdescription);
+        xproduct.add(new JLabel("Quantity:"));
+        xproduct.add(xquantity);
+        xproduct.add(new JLabel("Price:"));
+        xproduct.add(xprice);
+
         Socket socket = new Socket("localhost", 1000);
         ois = new ObjectInputStream(socket.getInputStream());
         oos = new ObjectOutputStream(socket.getOutputStream());
@@ -86,14 +91,17 @@ public class Client {
                 String email = xemail.getText();
                 String password = xpass.getText();
                 String nickname = xnickname.getText();
+            oos.writeObject(email);
+            oos.writeObject(password);
+            oos.writeObject(nickname);
 
         }
-        oos.writeObject(email);
-        oos.writeObject(password);
-        oos.writeObject(nickname);
-        
-        int role = roleCreateInputDialog();
-        oos.writeObject(roles[role]);
+
+        int choice;
+        String[] roles = {"Customer", "Seller"};
+        choice = (int) JOptionPane.showInputDialog(null, "Select your role",
+            "Account Creation", JOptionPane.QUESTION_MESSAGE, null, roles, roles[0]);
+        oos.writeObject(roles[choice]);
         
         String createResult = (String) ois.readObject();
         if ("success".equalsIgnoreCase(createResult)) {
@@ -111,10 +119,11 @@ public class Client {
         if (res == JOptionPane.OK_OPTION) {
             String email = xemail.getText();
             String password = xpassword.getText();
+            oos.writeObject(email);
+            oos.writeObject(password);
         }
         
-        oos.writeObject(email);
-        oos.writeObject(password);
+
         String loginResult = (String) ois.readObject();
         if ("success".equalsIgnoreCase(loginResult)) {
             ArrayList<String> accountData = (ArrayList<String>) ois.readObject();
@@ -153,22 +162,23 @@ public class Client {
                     double price;
                     
                     //Product creation jpanel
-                    int result = JOptionPane.showConfirmDialog(null, product, "Product Creation", JOptionPane.OK_CANCEL_OPTION);
+                    int result = JOptionPane.showConfirmDialog(null, "product", "Product Creation", JOptionPane.OK_CANCEL_OPTION);
                     if (result == JOptionPane.OK_OPTION) {
                         if (xname.getText() == null || xdescription.getText() == null || xquantity.getText() == null || xprice.getText() == null) {
                             productFailMessageDialog();
                         } else {
-                            pname = xname.getText();
+                            pName = xname.getText();
                             des = xdescription.getText();
-                            quantity = xquantity.getText();
-                            price = xprice.getText();
+                            quantity = Integer.parseInt(xquantity.getText());
+                            price = Integer.parseInt(xprice.getText());
+                            oos.writeObject(pName);
+                            oos.writeObject(des);
+                            oos.writeInt(quantity);
+                            oos.writeDouble(price);
                         }
                     }
                     
-                    oos.writeObject(pName);
-                    oos.writeObject(des);
-                    oos.writeInt(quantity);
-                    oos.writeDouble(price);
+
                     
                     
                 } else if (choice == 2) {
@@ -414,7 +424,6 @@ public class Client {
     private static String showInputDialog(String message) {
         return JOptionPane.showInputDialog(message);
     }
-    -----------------------------------
 
     public static void showWelcomeMessageDialog() {
         JOptionPane.showMessageDialog(null, "Welcome to the Marketplace",
@@ -439,7 +448,8 @@ public class Client {
             case JOptionPane.NO_OPTION:
                 choice = 2;
                 break;
-            case JOptionPane.CANCEL_OPTION, JOptionPane.CLOSED_OPTION:
+            case JOptionPane.CANCEL_OPTION:
+            case JOptionPane.CLOSED_OPTION:
                 choice = 3;
                 break;
         }
@@ -467,10 +477,10 @@ public class Client {
         return choice;
     }
 
-    public static String roleCreateInputDialog() {
-        String choice;
+    public static int roleCreateInputDialog() {
+        int choice;
         String[] roles = {"Customer", "Seller"};
-        choice = (String) JOptionPane.showInputDialog(null, "Select your role",
+        choice = (int) JOptionPane.showInputDialog(null, "Select your role",
                 "Account Creation", JOptionPane.QUESTION_MESSAGE, null, roles, roles[0]);
         return choice;
     }
@@ -489,10 +499,7 @@ public class Client {
         JOptionPane.showMessageDialog(null, "You entered the wrong login or password",
                 "Marketplace Login", JOptionPane.ERROR_MESSAGE);
     }
-    
-   
-    -------------------------
-        
+
     public static int customerMainInputDialog() {
         String[] options = {"1. Sort products", "2. Search for a product", "3. Display Dashboard",
                 "4. Select a product", "5. Account Settings", "6. View purchase history", "Exit"};
@@ -641,10 +648,10 @@ public class Client {
         return choice;
     }
 
-    public static int accNameInputDialog() {
-        int choice;
-        choice = Integer.parseInt(JOptionPane.showInputDialog(null, "Enter your new nickname",
-                "Account", JOptionPane.QUESTION_MESSAGE));
+    public static String accNameInputDialog() {
+        String choice;
+        choice = JOptionPane.showInputDialog(null, "Enter your new nickname",
+            "Account", JOptionPane.QUESTION_MESSAGE);
         return choice;
     }
 
@@ -676,6 +683,12 @@ public class Client {
     public static int purchaseInputDialog() {
         int choice = 1 + JOptionPane.showConfirmDialog(null, "Would you like to buy this product?",
                 "Product", JOptionPane.YES_NO_OPTION);
+        return choice;
+    }
+
+    public static int dashboardInputDialog() {
+        int choice = 1 + JOptionPane.showConfirmDialog(null, "Would you like to buy this product?",
+            "Product", JOptionPane.YES_NO_OPTION);
         return choice;
     }
 
