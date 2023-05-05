@@ -9,6 +9,7 @@ Run with the following files:
   - Store.java
   - Product.java
   - NotAProductException.java
+  - DisplayMarketCondition.java
   
 Data for the economy is split into three files whose values are separated by semicolons then commas:
   - Accounts.txt
